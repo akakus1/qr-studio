@@ -6,6 +6,10 @@
 <title>QR Promo Design Pack — QR Studio</title>
 <meta name="description" content="AI-powered print-ready QR business designs. Professional marketing in seconds."/>
 
+<!-- Supabase config — edit public/js/config.js before deploying -->
+<script src="/js/config.js"></script>
+<script src="/js/auth.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -14,7 +18,6 @@
 <link rel="stylesheet" href="/css/styles.css"/>
 
 <style>
-/* ══ ALL PROMO STYLES INLINED — no external dependency ═══ */
 :root{--bg:#080B14;--bg2:#0C1120;--s1:#111827;--s2:#161F30;--s3:#1C2840;--border:rgba(255,255,255,0.07);--bhi:rgba(255,255,255,0.13);--bp:rgba(124,58,237,0.5);--ba:rgba(245,158,11,0.5);--purple:#7C3AED;--purpleL:#A78BFA;--purpleD:#5B21B6;--pdim:rgba(124,58,237,0.15);--pglow:rgba(124,58,237,0.35);--amber:#F59E0B;--amberL:#FCD34D;--adim:rgba(245,158,11,0.15);--aglow:rgba(245,158,11,0.4);--white:#F9FAFB;--t2:#CBD5E1;--tmuted:#64748B;--tdim:#2D3A52;--green:#10B981;--red:#EF4444;--r24:24px;--r16:16px;--r12:12px;--r8:8px;--rfull:9999px;--ease:cubic-bezier(0.4,0,0.2,1);--tr:0.2s cubic-bezier(0.4,0,0.2,1);--fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;}
 html[lang="ar"]{--fd:'Cairo',sans-serif;--fb:'Cairo',sans-serif;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -44,8 +47,6 @@ html[dir="rtl"] .lang-bar{right:auto;left:22px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 .page{position:relative;z-index:1;}
-
-/* HERO */
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:130px 24px 80px;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 120% 60% at 50% -5%,rgba(124,58,237,0.38) 0%,transparent 52%),radial-gradient(ellipse 60% 50% at 15% 80%,rgba(124,58,237,0.12) 0%,transparent 55%),radial-gradient(ellipse 50% 40% at 85% 70%,rgba(245,158,11,0.14) 0%,transparent 50%);pointer-events:none;}
 .hero::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent,transparent 2px,rgba(255,255,255,0.018) 2px,rgba(255,255,255,0.018) 3px);pointer-events:none;}
@@ -75,9 +76,7 @@ html[lang="ar"] .hero-sub{font-size:1.1rem;}
 .step-item.done{color:var(--green);}
 .step-item.done .step-num{background:rgba(16,185,129,0.18);border-color:rgba(16,185,129,0.4);color:var(--green);}
 
-/* BODY */
 .body-wrap{max-width:960px;margin:0 auto;padding:0 28px 120px;}
-
 .qr-carry{display:flex;align-items:center;gap:18px;background:linear-gradient(135deg,rgba(17,24,39,0.9),rgba(22,31,48,0.9));border:1px solid var(--border);border-radius:var(--r16);padding:18px 22px;margin-bottom:28px;backdrop-filter:blur(8px);transition:border-color var(--tr);}
 .qr-carry:hover{border-color:rgba(124,58,237,0.4);}
 .qr-thumb{background:#fff;padding:7px;border-radius:10px;width:66px;height:66px;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,0.4);}
@@ -191,7 +190,7 @@ html[lang="ar"] .btn-gen{letter-spacing:0;}
 .pricing-wrap::before{content:'';position:absolute;width:900px;height:500px;background:radial-gradient(ellipse at 50% 0%,rgba(124,58,237,0.24),transparent 58%);top:-150px;left:50%;transform:translateX(-50%);pointer-events:none;}
 .pricing-wrap::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 5%,var(--purple) 30%,var(--purpleL) 45%,var(--amberL) 55%,var(--amber) 70%,transparent 95%);box-shadow:0 0 20px rgba(124,58,237,0.5);}
 .pricing-header{text-align:center;margin-bottom:60px;position:relative;}
-.pricing-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.45);border-radius:var(--rfull);color:var(--amberL);font-size:.68rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:9px 22px;margin-bottom:22px;box-shadow:0 0 24px rgba(245,158,11,0.1);}
+.pricing-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.45);border-radius:var(--rfull);color:var(--amberL);font-size:.68rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:9px 22px;margin-bottom:22px;}
 html[lang="ar"] .pricing-eyebrow{letter-spacing:0;font-size:.8rem;}
 .pricing-h2{font-family:var(--fd);font-size:clamp(2rem,4.5vw,3.4rem);font-weight:800;letter-spacing:-.04em;margin-bottom:16px;line-height:1.08;}
 html[lang="ar"] .pricing-h2{letter-spacing:0;}
@@ -206,7 +205,6 @@ html[lang="ar"] .pricing-h2{letter-spacing:0;}
 .tier.rec::before{background:linear-gradient(90deg,transparent 0%,rgba(124,58,237,0.8) 25%,rgba(167,139,250,0.9) 45%,rgba(245,158,11,0.7) 55%,rgba(124,58,237,0.8) 75%,transparent 100%);height:2px;}
 .tier.rec:hover{transform:translateY(-18px);box-shadow:0 0 0 1px rgba(124,58,237,0.55),0 48px 110px rgba(0,0,0,0.7),0 0 140px rgba(124,58,237,0.22);}
 .pop-badge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;font-size:.64rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;padding:8px 26px;border-radius:0 0 18px 18px;white-space:nowrap;box-shadow:0 6px 24px rgba(124,58,237,0.7);}
-html[lang="ar"] .pop-badge{letter-spacing:0;}
 .tier-name{font-size:.66rem;font-weight:900;letter-spacing:.22em;text-transform:uppercase;color:#374151;margin-bottom:20px;margin-top:10px;}
 .tier.rec .tier-name{color:var(--purpleL);}
 html[lang="ar"] .tier-name{letter-spacing:0;}
@@ -237,14 +235,10 @@ html[lang="ar"] .tier-cta{letter-spacing:0;font-size:.96rem;}
 .trust-row{display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap;margin-top:8px;}
 .trust-item{display:flex;align-items:center;gap:8px;font-size:.8rem;color:#475569;}
 .trust-item svg{width:14px;height:14px;color:var(--green);}
-.restore-block{margin-top:36px;padding-top:28px;border-top:1px solid rgba(255,255,255,0.06);text-align:center;}
-.restore-label{font-size:.85rem;color:var(--tmuted);margin-bottom:14px;}
-.restore-row{display:flex;gap:10px;max-width:420px;margin:0 auto;}
-@media(max-width:520px){.restore-row{flex-direction:column;}}
-.restore-input{flex:1;background:rgba(22,31,48,0.8);border:1px solid var(--border);border-radius:var(--r12);color:var(--white);font-family:var(--fb);font-size:.9rem;padding:14px 18px;outline:none;transition:border-color var(--tr);}
-.restore-input:focus{border-color:var(--purple);}
-.btn-restore{background:var(--pdim);border:1px solid var(--bp);border-radius:var(--r12);color:var(--purpleL);font-family:var(--fb);font-size:.86rem;font-weight:700;padding:14px 22px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all var(--tr);}
-.btn-restore:hover{background:rgba(124,58,237,0.28);}
+.already-paid-note{text-align:center;margin-top:28px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06);}
+.already-paid-note p{font-size:.84rem;color:var(--tmuted);}
+.already-paid-note a{color:var(--purpleL);font-weight:600;text-decoration:none;}
+.already-paid-note a:hover{text-decoration:underline;}
 
 #download-panel{display:none;}
 .dl-wrap{background:linear-gradient(145deg,rgba(5,24,18,0.98),rgba(8,14,26,0.98));border:1px solid rgba(16,185,129,0.3);border-radius:var(--r24);padding:56px 48px;text-align:center;position:relative;overflow:hidden;animation:scaleIn .5s ease both;box-shadow:0 32px 80px rgba(0,0,0,0.55);}
@@ -261,9 +255,11 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
 .dl-btn-png{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12)!important;color:var(--t2);}
 .dl-btn-png:hover{border-color:var(--bp)!important;color:var(--purpleL);background:var(--pdim);}
 .dl-specs{font-size:.72rem;color:var(--tdim);margin-top:20px;letter-spacing:.05em;}
+.dl-dashboard-link{margin-top:24px;}
+.dl-dashboard-link a{display:inline-flex;align-items:center;gap:8px;color:var(--purpleL);font-size:.88rem;font-weight:600;text-decoration:none;border:1px solid var(--bp);border-radius:var(--rfull);padding:10px 22px;background:var(--pdim);transition:all .2s;}
+.dl-dashboard-link a:hover{background:rgba(124,58,237,0.25);}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes scaleIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
 @keyframes langFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .lang-fade{animation:langFade .28s ease both;}
@@ -290,6 +286,7 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
   .hero-sub{font-size:1.05rem;}
   .form-grid{grid-template-columns:1fr;}
   .edit-row{grid-template-columns:1fr;}
+  .designs-grid{grid-template-columns:1fr 1fr;}
 }
 @media(max-width:480px){
   .hero-h1{font-size:2.1rem;}
@@ -298,7 +295,7 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
   .tier.rec{padding:36px 24px;}
   .trust-row{gap:16px;}
   .dl-btns{flex-direction:column;align-items:center;}
-  .designs-grid{grid-template-columns:1fr 1fr;}
+  .designs-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -311,8 +308,11 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
 <div class="ai-overlay" id="ai-overlay">
   <div class="ai-orb"></div>
   <div class="ai-overlay-text" id="ai-loading-text">Generating your designs…</div>
-  <div class="ai-overlay-sub"  id="ai-loading-sub">AI is crafting your marketing copy</div>
+  <div class="ai-overlay-sub"  id="ai-loading-sub">This takes about 15 seconds</div>
 </div>
+
+<!-- Auth nav: top-left -->
+<div style="position:fixed;top:22px;left:22px;z-index:500;display:flex;align-items:center;gap:10px;" id="nav-auth"></div>
 
 <nav class="lang-bar">
   <button class="lang-btn active" id="btn-en">EN</button>
@@ -321,13 +321,13 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
 
 <div class="page" id="main-wrapper">
 
-<!-- ═══ HERO ══════════════════════════════════════════════ -->
+<!-- HERO -->
 <section class="hero">
   <a href="/index.html" class="back-link">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
     <span data-i18n="back">Back to QR Generator</span>
   </a>
-  <div class="eyebrow" style="animation:fadeUp .6s var(--ease) both;">
+  <div class="eyebrow">
     <span class="eyebrow-dot"></span>
     <span data-i18n="pro_badge">QR Promo Design Pack</span>
   </div>
@@ -336,7 +336,7 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
     <span class="grad-text" data-i18n="h1_line2">QR Business Designs</span><br/>
     <span data-i18n="h1_line3">in Seconds</span>
   </h1>
-  <p class="hero-sub" style="animation:fadeUp .7s var(--ease) .15s both;" data-i18n="subtitle">
+  <p class="hero-sub" data-i18n="subtitle">
     Turn your QR code into a premium marketing tool — AI generates print-ready flyers, car signs, and business cards instantly.
   </p>
   <div class="step-track">
@@ -347,17 +347,16 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
   </div>
 </section>
 
-<!-- ═══ BODY ═════════════════════════════════════════════ -->
+<!-- BODY -->
 <div class="body-wrap">
 <div id="step1-section">
-
   <div class="qr-carry">
     <div class="qr-thumb"><div id="qr-mini-render"></div></div>
     <div class="qr-carry-info">
       <div class="qc-tag" data-i18n="qr_label">Your QR Content</div>
       <div class="qc-url" id="qr-value-display">—</div>
     </div>
-    <a href="/index.html" class="qc-edit" id="qr-edit-link" data-i18n="qr_edit">Edit ↗</a>
+    <a href="/index.html" class="qc-edit" data-i18n="qr_edit">Edit ↗</a>
   </div>
 
   <!-- Step 1 -->
@@ -371,8 +370,8 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
       </div>
     </div>
     <div class="form-grid">
-      <div class="ff"><label data-i18n="f_name">Business Name <span class="req">*</span></label><input type="text" id="biz-name" placeholder="e.g. Al Noor Car Wash"/></div>
-      <div class="ff"><label data-i18n="f_industry">Industry <span class="req">*</span></label>
+      <div class="ff"><label>Business Name <span class="req">*</span></label><input type="text" id="biz-name" placeholder="e.g. Al Noor Car Wash"/></div>
+      <div class="ff"><label>Industry <span class="req">*</span></label>
         <select id="biz-industry">
           <option value="">Select industry…</option>
           <option value="restaurant">🍽 Restaurant / Café</option>
@@ -392,18 +391,18 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
           <option value="other">✨ Other</option>
         </select>
       </div>
-      <div class="ff"><label data-i18n="f_phone">Phone Number <span class="req">*</span></label><input type="tel" id="biz-phone" placeholder="+1 555 000 0000"/></div>
-      <div class="ff"><label data-i18n="f_whatsapp">WhatsApp Number</label><input type="tel" id="biz-whatsapp" placeholder="+1 555 000 0000"/></div>
-      <div class="ff"><label data-i18n="f_website">Website</label><input type="url" id="biz-website" placeholder="https://yourbusiness.com"/></div>
-      <div class="ff"><label data-i18n="f_address">Address</label><input type="text" id="biz-address" placeholder="Street, City"/></div>
-      <div class="ff"><label data-i18n="f_social">Social Media Handle</label><input type="text" id="biz-social" placeholder="@yourhandle"/></div>
-      <div class="ff"><label data-i18n="f_tagline">Custom Tagline</label><input type="text" id="biz-tagline" placeholder="e.g. Quality you can trust"/></div>
+      <div class="ff"><label>Phone Number <span class="req">*</span></label><input type="tel" id="biz-phone" placeholder="+44 7700 900000"/></div>
+      <div class="ff"><label>WhatsApp Number</label><input type="tel" id="biz-whatsapp" placeholder="+44 7700 900000"/></div>
+      <div class="ff"><label>Website</label><input type="url" id="biz-website" placeholder="https://yourbusiness.com"/></div>
+      <div class="ff"><label>Address</label><input type="text" id="biz-address" placeholder="Street, City"/></div>
+      <div class="ff"><label>Social Media Handle</label><input type="text" id="biz-social" placeholder="@yourhandle"/></div>
+      <div class="ff"><label>Custom Tagline</label><input type="text" id="biz-tagline" placeholder="e.g. Quality you can trust"/></div>
       <div class="ff full">
-        <label data-i18n="f_logo">Business Logo (optional)</label>
+        <label>Business Logo <span style="color:var(--tmuted);font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
         <div class="logo-zone" id="logo-zone" onclick="document.getElementById('logo-file').click()">
           <img class="logo-preview" id="logo-preview" alt=""/>
           <svg id="logo-upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 18.75V7.5A2.25 2.25 0 015.25 5.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75"/></svg>
-          <p id="logo-zone-text"><span data-i18n="upload_click">Click to upload</span> <span data-i18n="upload_or">or drag &amp; drop</span> · PNG, JPG up to 5MB</p>
+          <p id="logo-zone-text"><span>Click to upload</span> or drag &amp; drop · PNG or JPG up to 5MB</p>
           <input type="file" id="logo-file" accept="image/*"/>
         </div>
       </div>
@@ -417,35 +416,35 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
       <div>
         <div class="s-label">Step 2</div>
         <div class="s-title" data-i18n="prefs">Design Preferences</div>
-        <div class="s-desc"  data-i18n="prefs_desc">Guide the AI to generate designs that match your brand and goals.</div>
+        <div class="s-desc" data-i18n="prefs_desc">Guide the AI to generate designs that match your brand and goals.</div>
       </div>
     </div>
-    <div class="pref-div"><span class="pref-div-label" data-i18n="goal_label">Campaign Goal</span><div class="pref-div-line"></div></div>
+    <div class="pref-div"><span class="pref-div-label">Campaign Goal</span><div class="pref-div-line"></div></div>
     <div class="chips-row" id="goal-chips">
-      <div class="chip selected" data-val="calls"><span class="chip-icon">📞</span><span class="chip-title" data-i18n="goal_calls">Get Calls</span><span class="chip-sub" data-i18n="goal_calls_s">Drive phone inquiries</span></div>
-      <div class="chip" data-val="whatsapp"><span class="chip-icon">💬</span><span class="chip-title" data-i18n="goal_wa">Get WhatsApp</span><span class="chip-sub" data-i18n="goal_wa_s">Direct messaging</span></div>
-      <div class="chip" data-val="bookings"><span class="chip-icon">📅</span><span class="chip-title" data-i18n="goal_book">Get Bookings</span><span class="chip-sub" data-i18n="goal_book_s">Appointments</span></div>
-      <div class="chip" data-val="website"><span class="chip-icon">🌐</span><span class="chip-title" data-i18n="goal_web">Website Visits</span><span class="chip-sub" data-i18n="goal_web_s">Drive traffic</span></div>
+      <div class="chip selected" data-val="calls"><span class="chip-icon">📞</span><span class="chip-title">Get Calls</span><span class="chip-sub">Drive phone inquiries</span></div>
+      <div class="chip" data-val="whatsapp"><span class="chip-icon">💬</span><span class="chip-title">Get WhatsApp</span><span class="chip-sub">Direct messaging</span></div>
+      <div class="chip" data-val="bookings"><span class="chip-icon">📅</span><span class="chip-title">Get Bookings</span><span class="chip-sub">Appointments</span></div>
+      <div class="chip" data-val="website"><span class="chip-icon">🌐</span><span class="chip-title">Website Visits</span><span class="chip-sub">Drive traffic</span></div>
     </div>
-    <div class="pref-div" style="margin-top:24px"><span class="pref-div-label" data-i18n="style_label">Design Style</span><div class="pref-div-line"></div></div>
+    <div class="pref-div" style="margin-top:24px"><span class="pref-div-label">Design Style</span><div class="pref-div-line"></div></div>
     <div class="chips-row" id="style-chips">
-      <div class="chip selected" data-val="modern"><span class="chip-icon">⚡</span><span class="chip-title" data-i18n="s_modern">Modern</span><span class="chip-sub" data-i18n="s_modern_s">Clean, contemporary</span></div>
-      <div class="chip" data-val="bold"><span class="chip-icon">🔥</span><span class="chip-title" data-i18n="s_bold">Bold</span><span class="chip-sub" data-i18n="s_bold_s">High impact</span></div>
-      <div class="chip" data-val="luxury"><span class="chip-icon">✨</span><span class="chip-title" data-i18n="s_luxury">Luxury</span><span class="chip-sub" data-i18n="s_luxury_s">Premium, elegant</span></div>
-      <div class="chip" data-val="minimal"><span class="chip-icon">◻️</span><span class="chip-title" data-i18n="s_minimal">Minimal</span><span class="chip-sub" data-i18n="s_minimal_s">Less is more</span></div>
+      <div class="chip selected" data-val="modern"><span class="chip-icon">⚡</span><span class="chip-title">Modern</span><span class="chip-sub">Clean, contemporary</span></div>
+      <div class="chip" data-val="bold"><span class="chip-icon">🔥</span><span class="chip-title">Bold</span><span class="chip-sub">High impact</span></div>
+      <div class="chip" data-val="luxury"><span class="chip-icon">✨</span><span class="chip-title">Luxury</span><span class="chip-sub">Premium, elegant</span></div>
+      <div class="chip" data-val="minimal"><span class="chip-icon">◻️</span><span class="chip-title">Minimal</span><span class="chip-sub">Less is more</span></div>
     </div>
-    <div class="pref-div" style="margin-top:24px"><span class="pref-div-label" data-i18n="lang_label">Design Language</span><div class="pref-div-line"></div></div>
+    <div class="pref-div" style="margin-top:24px"><span class="pref-div-label">Design Language</span><div class="pref-div-line"></div></div>
     <div class="chips-row" id="lang-chips">
-      <div class="chip selected" data-val="en"><span class="chip-icon">🇬🇧</span><span class="chip-title" data-i18n="l_en">English</span><span class="chip-sub">LTR layout</span></div>
-      <div class="chip" data-val="ar"><span class="chip-icon">🇸🇦</span><span class="chip-title" data-i18n="l_ar">Arabic</span><span class="chip-sub">RTL layout</span></div>
-      <div class="chip" data-val="both"><span class="chip-icon">🌍</span><span class="chip-title" data-i18n="l_both">Bilingual</span><span class="chip-sub">AR + EN</span></div>
+      <div class="chip selected" data-val="en"><span class="chip-icon">🇬🇧</span><span class="chip-title">English</span><span class="chip-sub">LTR layout</span></div>
+      <div class="chip" data-val="ar"><span class="chip-icon">🇸🇦</span><span class="chip-title">Arabic</span><span class="chip-sub">RTL layout</span></div>
+      <div class="chip" data-val="both"><span class="chip-icon">🌍</span><span class="chip-title">Bilingual</span><span class="chip-sub">AR + EN</span></div>
     </div>
-    <div class="pref-div" style="margin-top:24px"><span class="pref-div-label" data-i18n="size_label">Print Size</span><div class="pref-div-line"></div></div>
+    <div class="pref-div" style="margin-top:24px"><span class="pref-div-label">Print Size</span><div class="pref-div-line"></div></div>
     <div class="chips-row" id="size-chips">
       <div class="chip selected" data-val="a6"><span class="chip-icon">📄</span><span class="chip-title">A6</span><span class="chip-sub">105×148mm · Flyer</span></div>
       <div class="chip" data-val="a5"><span class="chip-icon">📋</span><span class="chip-title">A5</span><span class="chip-sub">148×210mm · Leaflet</span></div>
       <div class="chip" data-val="10x15"><span class="chip-icon">🖼</span><span class="chip-title">10×15cm</span><span class="chip-sub">Photo card</span></div>
-      <div class="chip" data-val="cardoor"><span class="chip-icon">🚗</span><span class="chip-title" data-i18n="sz_car">Car Door</span><span class="chip-sub">30×40cm</span></div>
+      <div class="chip" data-val="cardoor"><span class="chip-icon">🚗</span><span class="chip-title">Car Door</span><span class="chip-sub">30×40cm</span></div>
     </div>
   </div>
 
@@ -453,12 +452,10 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
     <span data-i18n="btn_generate">Generate AI Designs</span>
   </button>
-
 </div><!-- /#step1-section -->
 
-<!-- ═══ RESULTS ═══════════════════════════════════════════ -->
+<!-- RESULTS -->
 <div id="results-section">
-
   <div class="results-header">
     <div>
       <h2 class="results-h2" data-i18n="results_title">Your Designs</h2>
@@ -466,9 +463,9 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
     </div>
     <div class="results-badge" id="results-count">8 variations</div>
   </div>
-
   <div class="designs-grid" id="designs-grid"></div>
 
+  <!-- Edit panel -->
   <div id="edit-section">
     <div class="edit-panel">
       <div class="edit-panel-title">
@@ -497,77 +494,68 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
       <div class="pricing-header">
         <div class="pricing-eyebrow">🔒 <span data-i18n="pricing_eyebrow">Unlock Your Print-Ready Files</span></div>
         <h2 class="pricing-h2" data-i18n="pricing_title">Download High-Resolution PDF</h2>
-        <p class="pricing-sub" data-i18n="pricing_subtitle">One-time payment. Instant download. No subscription ever.</p>
+        <p class="pricing-sub" data-i18n="pricing_subtitle">One-time payment. Instant download. Access forever via your dashboard.</p>
       </div>
       <div class="tier-grid">
-
-        <!-- $10 Basic -->
-        <div class="tier" id="tier-basic">
-          <div class="tier-name" data-i18n="tier_basic_name">Basic</div>
+        <!-- Basic $10 -->
+        <div class="tier">
+          <div class="tier-name">Basic</div>
           <div class="tier-price"><span class="tier-cur">$</span><span class="tier-val">10</span></div>
-          <p class="tier-billing" data-i18n="tier_billing">One-time · No subscription</p>
+          <p class="tier-billing">One-time · No subscription</p>
           <ul class="tier-feats">
-            <li><span class="fcheck">✓</span><span data-i18n="basic_f1">3 AI design ideas</span></li>
-            <li><span class="fcheck">✓</span><span data-i18n="basic_f2">PNG preview download</span></li>
-            <li><span class="fcheck">✓</span><span data-i18n="basic_f3">Standard quality</span></li>
-            <li><span class="fcheck">✓</span><span data-i18n="basic_f4">Instant delivery</span></li>
+            <li><span class="fcheck">✓</span><span>3 AI design ideas</span></li>
+            <li><span class="fcheck">✓</span><span>PNG download</span></li>
+            <li><span class="fcheck">✓</span><span>Standard quality</span></li>
+            <li><span class="fcheck">✓</span><span>Saved in dashboard</span></li>
           </ul>
-          <a class="tier-cta tier-cta-ghost" href="https://buy.stripe.com/6oU28q0OD4sq41rfBj77O04" id="btn-tier-basic" data-tier="basic" data-price="10">
+          <button class="tier-cta tier-cta-ghost" id="btn-tier-basic" data-tier="basic">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-            <span data-i18n="tier_basic_cta">Get My Design</span>
-          </a>
+            Get My Design
+          </button>
         </div>
-
-        <!-- $15 Recommended -->
-        <div class="tier rec" id="tier-recommended">
-          <div class="pop-badge" data-i18n="popular_badge">Most Popular</div>
-          <div class="tier-name" data-i18n="tier_rec_name">Recommended</div>
+        <!-- Recommended $15 -->
+        <div class="tier rec">
+          <div class="pop-badge">Most Popular</div>
+          <div class="tier-name">Recommended</div>
           <div class="tier-price"><span class="tier-cur">$</span><span class="tier-val">15</span></div>
-          <p class="tier-billing" data-i18n="tier_billing">One-time · No subscription</p>
+          <p class="tier-billing">One-time · No subscription</p>
           <ul class="tier-feats">
-            <li><span class="fcheck">✓</span><span data-i18n="rec_f1">8 AI-generated designs</span></li>
-            <li><span class="fcheck">✓</span><span data-i18n="rec_f2">Print-ready PDF at 300 DPI</span></li>
-            <li><span class="fcheck">✓</span><span data-i18n="rec_f3">PNG high-resolution download</span></li>
-            <li><span class="fcheck">✓</span><span data-i18n="rec_f4">3mm bleed + crop marks</span></li>
-            <li><span class="fcheck">✓</span><span data-i18n="rec_f5">Best value</span></li>
+            <li><span class="fcheck">✓</span><span>8 AI-generated designs</span></li>
+            <li><span class="fcheck">✓</span><span>Print-ready PDF at 300 DPI</span></li>
+            <li><span class="fcheck">✓</span><span>PNG high-resolution</span></li>
+            <li><span class="fcheck">✓</span><span>3mm bleed + crop marks</span></li>
+            <li><span class="fcheck">✓</span><span>Forever in your dashboard</span></li>
           </ul>
-          <a class="tier-cta tier-cta-gold" href="https://buy.stripe.com/7sYcN48h5e309lL3SB77O03" id="btn-tier-recommended" data-tier="recommended" data-price="15">
+          <button class="tier-cta tier-cta-gold" id="btn-tier-recommended" data-tier="recommended">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
-            <span data-i18n="tier_rec_cta">Unlock Designs — $15</span>
-          </a>
+            Unlock Designs — $15
+          </button>
         </div>
-
-        <!-- $20 Premium -->
-        <div class="tier" id="tier-premium">
-          <div class="tier-name" data-i18n="tier_prem_name">Premium</div>
+        <!-- Premium $20 -->
+        <div class="tier">
+          <div class="tier-name">Premium</div>
           <div class="tier-price"><span class="tier-cur">$</span><span class="tier-val">20</span></div>
-          <p class="tier-billing" data-i18n="tier_billing">One-time · No subscription</p>
+          <p class="tier-billing">One-time · No subscription</p>
           <ul class="tier-feats">
-            <li><span class="fcheck">✓</span><span data-i18n="prem_f1">Everything in Recommended</span></li>
-            <li><span class="fcheck">✓</span><span data-i18n="prem_f2">Extra premium templates</span></li>
-            <li><span class="fcheck">✓</span><span data-i18n="prem_f3">Higher design quality</span></li>
-            <li><span class="fcheck">✓</span><span data-i18n="prem_f4">Priority output</span></li>
+            <li><span class="fcheck">✓</span><span>Everything in Recommended</span></li>
+            <li><span class="fcheck">✓</span><span>Extra premium templates</span></li>
+            <li><span class="fcheck">✓</span><span>Higher design quality</span></li>
+            <li><span class="fcheck">✓</span><span>Priority support</span></li>
           </ul>
-          <a class="tier-cta tier-cta-ghost" href="https://buy.stripe.com/14A3cu40PaQOcxXdtb77O06" id="btn-tier-premium" data-tier="premium" data-price="20">
+          <button class="tier-cta tier-cta-ghost" id="btn-tier-premium" data-tier="premium">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/></svg>
-            <span data-i18n="tier_prem_cta">Download My Design Pack</span>
-          </a>
+            Download My Design Pack
+          </button>
         </div>
-
-      </div><!-- /.tier-grid -->
-
-      <div class="trust-row">
-        <div class="trust-item"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg><span data-i18n="sec_stripe">Powered by Stripe</span></div>
-        <div class="trust-item"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span data-i18n="sec_onetime">One-time charge</span></div>
-        <div class="trust-item"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg><span data-i18n="sec_instant">Instant download</span></div>
       </div>
 
-      <div class="restore-block">
-        <p class="restore-label" data-i18n="already_paid">Already paid? Enter your email to restore access.</p>
-        <div class="restore-row">
-          <input type="email" id="restore-email" class="restore-input" placeholder="your@email.com"/>
-          <button class="btn-restore" id="restore-btn"><span data-i18n="restore_btn">Restore Access</span></button>
-        </div>
+      <div class="trust-row">
+        <div class="trust-item"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>Powered by Stripe</div>
+        <div class="trust-item"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>One-time charge</div>
+        <div class="trust-item"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>Instant download</div>
+      </div>
+      <div class="already-paid-note">
+        <p>Already purchased? <a href="/dashboard.html">View your designs in the Dashboard →</a></p>
       </div>
     </div>
   </div>
@@ -577,7 +565,7 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
     <div class="dl-wrap">
       <div class="dl-icon">✅</div>
       <h3 class="dl-h3" data-i18n="dl_title">Download Your Design Pack</h3>
-      <p class="dl-desc" data-i18n="dl_desc">Your print-ready files are prepared at 300 DPI with 3mm bleed and crop marks.</p>
+      <p class="dl-desc" data-i18n="dl_desc">Your print-ready files are prepared at 300 DPI with 3mm bleed and crop marks. Access them any time from your dashboard.</p>
       <div class="dl-btns">
         <button class="dl-btn dl-btn-pdf" id="dl-pdf-btn">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
@@ -588,10 +576,12 @@ html[lang="ar"] .dl-h3{letter-spacing:0;font-size:1.7rem;}
           <span data-i18n="dl_png">Download PNG</span>
         </button>
       </div>
-      <p class="dl-specs" data-i18n="dl_specs">300 DPI · CMYK-friendly · 3mm bleed · Crop marks · QR min 3cm</p>
+      <p class="dl-specs" data-i18n="dl_specs">300 DPI · CMYK-friendly · 3mm bleed · Crop marks</p>
+      <div class="dl-dashboard-link">
+        <a href="/dashboard.html">🗂 View all purchases in Dashboard →</a>
+      </div>
     </div>
   </div>
-
 </div><!-- /#results-section -->
 </div><!-- /.body-wrap -->
 </div><!-- /.page -->

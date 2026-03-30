@@ -1,64 +1,65 @@
-/**
- * styles.css — QR Studio shared baseline
- * Provides: CSS tokens, reset, lang-bar, toast, animations
- * promo.html carries its own full inlined styles on top of this.
- */
+/* ═══════════════════════════════════════════════════════════════
+   QR Studio — shared baseline CSS
+   Loaded on all pages. promo.html additionally inlines its own
+   full style block so it has zero external CSS dependencies.
+═══════════════════════════════════════════════════════════════ */
 
-/* ── Tokens ─────────────────────────────────────────────── */
+/* ── Tokens ─────────────────────────────────────────────────── */
 :root {
-  --bg:       #080B14;
-  --s1:       #111827;
-  --s2:       #161F30;
-  --s3:       #1C2840;
-  --border:   rgba(255,255,255,0.07);
-  --bhi:      rgba(255,255,255,0.13);
-  --bp:       rgba(124,58,237,0.5);
+  --bg:      #080B14;
+  --s1:      #111827;
+  --s2:      #161F30;
+  --s3:      #1C2840;
+  --border:  rgba(255,255,255,0.07);
+  --bhi:     rgba(255,255,255,0.13);
+  --bp:      rgba(124,58,237,0.5);
 
-  --purple:   #7C3AED;
-  --purpleL:  #A78BFA;
-  --purpleD:  #5B21B6;
-  --pdim:     rgba(124,58,237,0.15);
+  --purple:  #7C3AED;
+  --purpleL: #A78BFA;
+  --purpleD: #5B21B6;
+  --pdim:    rgba(124,58,237,0.15);
+  --pglow:   rgba(124,58,237,0.35);
 
-  --amber:    #F59E0B;
-  --amberL:   #FCD34D;
-  --adim:     rgba(245,158,11,0.15);
+  --amber:   #F59E0B;
+  --amberL:  #FCD34D;
+  --adim:    rgba(245,158,11,0.15);
 
-  --white:    #F9FAFB;
-  --t2:       #CBD5E1;
-  --tmuted:   #64748B;
-  --tdim:     #2D3A52;
+  --white:   #F9FAFB;
+  --t2:      #CBD5E1;
+  --tmuted:  #64748B;
+  --tdim:    #2D3A52;
 
-  --green:    #10B981;
-  --red:      #EF4444;
+  --green:   #10B981;
+  --red:     #EF4444;
 
-  --r24:      24px;
-  --r16:      16px;
-  --r12:      12px;
-  --rfull:    9999px;
+  --r24:     24px;
+  --r16:     16px;
+  --r12:     12px;
+  --rfull:   9999px;
 
-  --tr:       0.2s cubic-bezier(0.4,0,0.2,1);
-  --ease:     cubic-bezier(0.4,0,0.2,1);
+  --tr:      0.2s cubic-bezier(0.4,0,0.2,1);
+  --ease:    cubic-bezier(0.4,0,0.2,1);
 
-  --fd:       'Syne', 'Plus Jakarta Sans', sans-serif;
-  --fb:       'DM Sans', sans-serif;
+  --fd: 'Syne', sans-serif;
+  --fb: 'DM Sans', sans-serif;
 }
 html[lang="ar"] { --fd: 'Cairo', sans-serif; --fb: 'Cairo', sans-serif; }
 
-/* ── Reset ──────────────────────────────────────────────── */
+/* ── Reset ──────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
-  color: var(--white);
+  color:       var(--white);
   font-family: var(--fb);
   font-weight: 400;
   line-height: 1.65;
-  min-height: 100vh;
-  overflow-x: hidden;
+  min-height:  100vh;
+  overflow-x:  hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Language bar ───────────────────────────────────────── */
+/* ── Language bar ───────────────────────────────────────────── */
 .lang-bar {
   position: fixed; top: 22px; right: 22px; z-index: 500;
   display: flex; align-items: center;
@@ -74,45 +75,42 @@ html[dir="rtl"] .lang-bar { right: auto; left: 22px; }
 .lang-btn {
   background: none; border: 1px solid transparent;
   border-radius: var(--rfull);
-  color: var(--tmuted);
-  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  color: var(--tmuted); cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
   font-size: .74rem; font-weight: 700; letter-spacing: .09em;
   padding: 7px 16px; transition: all var(--tr);
 }
 .lang-btn:hover { color: var(--white); }
-.lang-btn.active { background: var(--pdim); border-color: var(--bp); color: var(--purpleL); }
+.lang-btn.active {
+  background: var(--pdim); border-color: var(--bp); color: var(--purpleL);
+}
 
-/* ── Toast ──────────────────────────────────────────────── */
+/* ── Toast ──────────────────────────────────────────────────── */
 .toast {
   position: fixed; bottom: 28px; left: 50%;
   transform: translateX(-50%) translateY(12px);
-  background: var(--s2);
-  border: 1px solid var(--bp);
+  background: var(--s2); border: 1px solid var(--bp);
   border-radius: var(--rfull);
-  color: var(--purpleL);
-  font-size: .85rem; font-weight: 600;
-  padding: 12px 28px; opacity: 0;
-  pointer-events: none; transition: all .3s ease;
-  z-index: 9999; white-space: nowrap;
+  color: var(--purpleL); font-size: .85rem; font-weight: 600;
+  padding: 12px 28px; opacity: 0; pointer-events: none;
+  transition: all .3s ease; z-index: 9999; white-space: nowrap;
   box-shadow: 0 8px 32px rgba(124,58,237,0.25);
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ── Keyframes ──────────────────────────────────────────── */
-@keyframes fadeUp   { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
-@keyframes fadeDown { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:translateY(0)} }
-@keyframes scaleIn  { from{opacity:0;transform:scale(.94)} to{opacity:1;transform:scale(1)} }
-@keyframes blink    { 0%,100%{opacity:1} 50%{opacity:.2} }
-@keyframes spin     { to{transform:rotate(360deg)} }
-@keyframes pulse    { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
-@keyframes gradShift{ 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-@keyframes orbFloat { 0%,100%{transform:translateX(-50%) scale(1)} 50%{transform:translateX(-50%) scale(1.07)} }
-@keyframes langFade { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+/* ── Keyframes ──────────────────────────────────────────────── */
+@keyframes fadeUp   { from { opacity:0; transform:translateY(22px) } to { opacity:1; transform:translateY(0) } }
+@keyframes fadeDown { from { opacity:0; transform:translateY(-16px) } to { opacity:1; transform:translateY(0) } }
+@keyframes scaleIn  { from { opacity:0; transform:scale(.94) } to { opacity:1; transform:scale(1) } }
+@keyframes spin     { to { transform:rotate(360deg) } }
+@keyframes pulse    { 0%,100% { opacity:1; transform:scale(1) } 50% { opacity:.4; transform:scale(.7) } }
+@keyframes gradShift{ 0% { background-position:0% 50% } 50% { background-position:100% 50% } 100% { background-position:0% 50% } }
+@keyframes orbFloat { 0%,100% { transform:translateX(-50%) scale(1) } 50% { transform:translateX(-50%) scale(1.07) } }
+@keyframes langFade { from { opacity:0; transform:translateY(6px) } to { opacity:1; transform:translateY(0) } }
 
 .lang-fade { animation: langFade .28s ease both; }
 .hidden    { display: none !important; }
 
-/* ── Mobile lang-bar adjust ─────────────────────────────── */
 @media (max-width: 640px) {
   .lang-bar { top: 16px; right: 16px; }
   html[dir="rtl"] .lang-bar { right: auto; left: 16px; }

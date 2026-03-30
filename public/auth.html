@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sign In — QR Studio</title>
+<!-- Supabase config — edit public/js/config.js before deploying -->
+<script src="/js/config.js"></script>
+<script src="/js/auth.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/styles.css"/>
+<style>
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;position:relative;}
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.bg-mesh::before{content:'';position:absolute;width:900px;height:700px;background:radial-gradient(ellipse at 50% 0%,rgba(124,58,237,0.28),transparent 60%);top:-280px;left:50%;transform:translateX(-50%);}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,0.035) 1px,transparent 1px);background-size:36px 36px;}
+.wrap{position:relative;z-index:1;width:100%;max-width:440px;}
+.logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:40px;text-decoration:none;}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--purple),var(--purpleD));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;box-shadow:0 4px 20px rgba(124,58,237,0.4);}
+.logo-text{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-.03em;color:var(--white);}
+.card{background:linear-gradient(145deg,rgba(17,24,39,0.98),rgba(13,19,35,0.98));border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:40px;position:relative;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.55);}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--purple),var(--amber),transparent);}
+.tabs{display:flex;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--rfull);padding:4px;gap:2px;margin-bottom:32px;}
+.tab{flex:1;background:none;border:none;border-radius:var(--rfull);color:var(--tmuted);font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;padding:9px;cursor:pointer;transition:all var(--tr);}
+.tab.active{background:var(--pdim);border:1px solid var(--bp);color:var(--purpleL);}
+.tab:hover:not(.active){color:var(--white);}
+.form{display:none;}.form.active{display:block;}
+.form-title{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-.03em;margin-bottom:6px;}
+.form-sub{font-size:.85rem;color:var(--tmuted);margin-bottom:28px;line-height:1.5;}
+.ff{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+.ff label{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--purpleL);}
+.ff input{background:rgba(22,31,48,0.8);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r12);color:var(--white);font-family:'DM Sans',sans-serif;font-size:.96rem;padding:14px 18px;outline:none;width:100%;transition:all var(--tr);}
+.ff input:focus{border-color:var(--purple);background:rgba(28,40,64,0.9);box-shadow:0 0 0 3px rgba(124,58,237,0.12);}
+.ff input::placeholder{color:var(--tdim);}
+.err{display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:10px;color:#FCA5A5;font-size:.84rem;padding:12px 16px;margin-bottom:16px;line-height:1.5;}
+.ok{display:none;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:10px;color:#6EE7B7;font-size:.84rem;padding:12px 16px;margin-bottom:16px;}
+.btn-primary{width:100%;background:linear-gradient(135deg,#7C3AED,#5B21B6 50%,#7C3AED);background-size:200% 100%;border:none;border-radius:var(--r12);color:#fff;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;padding:15px;cursor:pointer;transition:all var(--tr);box-shadow:0 4px 24px rgba(124,58,237,0.4);display:flex;align-items:center;justify-content:center;gap:10px;}
+.btn-primary:hover{background-position:right center;box-shadow:0 6px 36px rgba(124,58,237,0.6);transform:translateY(-2px);}
+.btn-primary:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none;}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;display:none;}
+.btn-link{background:none;border:none;color:var(--purpleL);font-family:'DM Sans',sans-serif;font-size:.82rem;cursor:pointer;padding:0;display:block;text-align:right;width:100%;margin-top:-10px;margin-bottom:18px;}
+.btn-link:hover{text-decoration:underline;}
+.foot{text-align:center;margin-top:24px;font-size:.8rem;color:var(--tmuted);}
+.foot a{color:var(--purpleL);text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="bg-mesh" aria-hidden="true"></div>
+<div class="bg-grid"  aria-hidden="true"></div>
+
+<div class="wrap">
+  <a href="/index.html" class="logo">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">QR Studio</span>
+  </a>
+
+  <div class="card">
+    <div class="tabs" id="auth-tabs">
+      <button class="tab active" data-form="login">Sign In</button>
+      <button class="tab"        data-form="register">Create Account</button>
+    </div>
+
+    <!-- Sign In -->
+    <div class="form active" id="form-login">
+      <h1 class="form-title">Welcome back</h1>
+      <p class="form-sub">Sign in to access your designs and downloads.</p>
+      <div class="err" id="login-err"></div>
+      <div class="ok"  id="login-ok"></div>
+      <div class="ff"><label>Email</label><input type="email" id="login-email" placeholder="you@example.com" autocomplete="email"/></div>
+      <div class="ff"><label>Password</label><input type="password" id="login-pass" placeholder="Your password" autocomplete="current-password"/></div>
+      <button class="btn-link" id="btn-forgot">Forgot password?</button>
+      <button class="btn-primary" id="btn-login">
+        <span id="btn-login-label">Sign In</span>
+        <div class="spinner" id="btn-login-spin"></div>
+      </button>
+    </div>
+
+    <!-- Sign Up -->
+    <div class="form" id="form-register">
+      <h1 class="form-title">Create account</h1>
+      <p class="form-sub">Join QR Studio to save designs and re-download any time.</p>
+      <div class="err" id="reg-err"></div>
+      <div class="ok"  id="reg-ok"></div>
+      <div class="ff"><label>Full Name</label><input type="text" id="reg-name" placeholder="Alex Johnson" autocomplete="name"/></div>
+      <div class="ff"><label>Email</label><input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email"/></div>
+      <div class="ff"><label>Password</label><input type="password" id="reg-pass" placeholder="At least 8 characters" autocomplete="new-password"/></div>
+      <button class="btn-primary" id="btn-register">
+        <span id="btn-register-label">Create Account</span>
+        <div class="spinner" id="btn-register-spin"></div>
+      </button>
+    </div>
+
+    <!-- Reset -->
+    <div class="form" id="form-reset">
+      <h1 class="form-title">Reset password</h1>
+      <p class="form-sub">Enter your email and we'll send a reset link.</p>
+      <div class="err" id="reset-err"></div>
+      <div class="ok"  id="reset-ok"></div>
+      <div class="ff"><label>Email</label><input type="email" id="reset-email" placeholder="you@example.com"/></div>
+      <button class="btn-primary" id="btn-reset">
+        <span id="btn-reset-label">Send Reset Link</span>
+        <div class="spinner" id="btn-reset-spin"></div>
+      </button>
+      <button class="btn-link" style="margin-top:14px;text-align:center;" onclick="showForm('login')">← Back to Sign In</button>
+    </div>
+  </div>
+
+  <div class="foot">By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a></div>
+</div>
+
+<script>
+const params   = new URLSearchParams(window.location.search);
+const returnTo = params.get('return') || '/dashboard.html';
+const initMode = params.get('mode');
+
+if (QRAuth.isLoggedIn()) window.location.href = returnTo;
+
+// Handle Supabase recovery hash (#access_token=...&type=recovery)
+const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+if (hash.get('type') === 'recovery' && hash.get('access_token')) {
+  showNewPasswordUI(hash.get('access_token'));
+}
+
+document.querySelectorAll('.tab').forEach(btn =>
+  btn.addEventListener('click', () => showForm(btn.dataset.form)));
+
+if (initMode === 'reset') showForm('reset');
+
+function showForm(name) {
+  document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  const f = document.getElementById(`form-${name}`);
+  const t = document.querySelector(`.tab[data-form="${name}"]`);
+  if (f) f.classList.add('active');
+  if (t) t.classList.add('active');
+}
+
+document.getElementById('btn-forgot').addEventListener('click', () => showForm('reset'));
+document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('btn-login').addEventListener('click', doLogin);
+document.getElementById('btn-register').addEventListener('click', doRegister);
+document.getElementById('btn-reset').addEventListener('click', doReset);
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  hideMsg('login-err'); hideMsg('login-ok');
+  if (!email || !pass) { showErr('login-err','Please enter your email and password.'); return; }
+  setLoading('btn-login', true);
+  try {
+    await QRAuth.login(email, pass);
+    showOk('login-ok','✓ Signed in! Redirecting…');
+    setTimeout(() => window.location.href = returnTo, 700);
+  } catch (e) { showErr('login-err', e.message); setLoading('btn-login', false); }
+}
+
+async function doRegister() {
+  const name  = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass  = document.getElementById('reg-pass').value;
+  hideMsg('reg-err'); hideMsg('reg-ok');
+  if (!email) { showErr('reg-err','Email is required.'); return; }
+  if (!pass || pass.length < 8) { showErr('reg-err','Password must be at least 8 characters.'); return; }
+  setLoading('btn-register', true);
+  try {
+    await QRAuth.register(email, pass, name);
+    showOk('reg-ok','✓ Account created! Check your email to confirm, then sign in.');
+    setTimeout(() => showForm('login'), 2500);
+  } catch (e) { showErr('reg-err', e.message); }
+  setLoading('btn-register', false);
+}
+
+async function doReset() {
+  const email = document.getElementById('reset-email').value.trim();
+  hideMsg('reset-err'); hideMsg('reset-ok');
+  if (!email) { showErr('reset-err','Please enter your email.'); return; }
+  setLoading('btn-reset', true);
+  try {
+    await QRAuth.resetPassword(email);
+    showOk('reset-ok','✓ If an account exists, a reset link has been sent.');
+  } catch (e) { showErr('reset-err', e.message); }
+  setLoading('btn-reset', false);
+}
+
+function showNewPasswordUI(token) {
+  document.querySelector('.tabs').style.display = 'none';
+  document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
+  const card = document.querySelector('.card');
+  const div  = document.createElement('div');
+  div.innerHTML = `
+    <h1 class="form-title">Set new password</h1>
+    <p class="form-sub">Enter your new password below.</p>
+    <div class="err" id="np-err"></div>
+    <div class="ok"  id="np-ok"></div>
+    <div class="ff"><label>New Password</label><input type="password" id="np-pass" placeholder="At least 8 characters"/></div>
+    <button class="btn-primary" id="btn-np">
+      <span id="btn-np-label">Update Password</span>
+      <div class="spinner" id="btn-np-spin"></div>
+    </button>`;
+  card.appendChild(div);
+  window.location.hash = '';
+  document.getElementById('btn-np').addEventListener('click', async () => {
+    const pass = document.getElementById('np-pass').value;
+    if (!pass || pass.length < 8) { showErr('np-err','Password must be at least 8 characters.'); return; }
+    setLoading('btn-np', true);
+    try {
+      const res = await fetch(`${window.QR_SUPABASE_URL}/auth/v1/user`, {
+        method: 'PUT',
+        headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${token}`, 'apikey': window.QR_SUPABASE_ANON },
+        body: JSON.stringify({ password: pass }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.msg || 'Update failed');
+      showOk('np-ok','✓ Password updated! Redirecting to sign in…');
+      setTimeout(() => window.location.href = '/auth.html', 2000);
+    } catch (e) { showErr('np-err', e.message); setLoading('btn-np', false); }
+  });
+}
+
+function showErr(id, msg) { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.style.display = 'block'; }
+function showOk(id, msg)  { const el = document.getElementById(id); if (!el) return; el.textContent = msg; el.style.display = 'block'; }
+function hideMsg(id)       { const el = document.getElementById(id); if (el) el.style.display = 'none'; }
+function setLoading(id, on) {
+  const btn = document.getElementById(id);
+  const lbl = document.getElementById(`${id}-label`);
+  const spn = document.getElementById(`${id}-spin`);
+  if (btn) btn.disabled = on;
+  if (lbl) lbl.style.display = on ? 'none' : 'inline';
+  if (spn) spn.style.display = on ? 'flex'  : 'none';
+}
+</script>
+</body>
+</html>

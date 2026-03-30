@@ -1,24 +1,25 @@
 /**
- * /api/generate-copy.js — Vercel Serverless Function
- * ─────────────────────────────────────────────────────────────
- * Receives business data from the frontend, calls Claude API
- * server-side (API key never in browser), returns 8 copy
- * variations as JSON.
+ * POST /api/generate-copy
+ * Auth: required (Bearer JWT)
+ * Body: { name, industry, phone, whatsapp?, website?, address?,
+ *          social?, tagline?, goal, style, lang, size, qrValue? }
+ * Returns: { ok, generationId, copies }
  *
- * Required env vars (Vercel dashboard):
- *   ANTHROPIC_API_KEY
- *   ALLOWED_ORIGIN  (optional, defaults to *)
- * ─────────────────────────────────────────────────────────────
+ * Uses service role to write to projects table (bypasses RLS).
+ * user_id always comes from the verified JWT — never from client input.
  */
+
+const { supabaseAdmin }                          = require('../lib/supabase');
+const { setCors, requireAuth, parseBody, sanitise } = require('../lib/auth');
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 const CLAUDE_MODEL  = 'claude-sonnet-4-20250514';
 const MAX_TOKENS    = 2000;
 
-/* ── Rate limiting (in-memory, resets on cold start) ─────── */
-const rlMap = new Map();
-const RL_WINDOW = 60_000; // 1 min
-const RL_MAX    = 10;
+/* ── In-memory rate limit (resets on cold start) ─────────── */
+const rlMap     = new Map();
+const RL_WINDOW = 60_000;   // 1 minute
+const RL_MAX    = 10;       // requests per window per IP
 
 function isRateLimited(ip) {
   const now = Date.now();
@@ -29,35 +30,30 @@ function isRateLimited(ip) {
   return e.count > RL_MAX;
 }
 
-/* ── Input sanitiser ─────────────────────────────────────── */
-function sanitise(v, max = 200) {
-  if (!v) return '';
-  return String(v).replace(/<[^>]*>/g, '').replace(/[<>"'`]/g, '').trim().slice(0, max);
-}
-
 /* ── Validation ──────────────────────────────────────────── */
+const ALLOWED = {
+  goal:  ['calls','whatsapp','bookings','website'],
+  style: ['modern','bold','luxury','minimal'],
+  lang:  ['en','ar','both'],
+  size:  ['a6','a5','10x15','cardoor'],
+};
+
 function validate(b) {
   const errs = [];
-  if (!b.name     || !b.name.trim())     errs.push('name required');
-  if (!b.industry || !b.industry.trim()) errs.push('industry required');
-  if (!b.phone    || !b.phone.trim())    errs.push('phone required');
-  const allowed = {
-    goal:  ['calls','whatsapp','bookings','website'],
-    style: ['modern','bold','luxury','minimal'],
-    lang:  ['en','ar','both'],
-    size:  ['a6','a5','10x15','cardoor'],
-  };
-  Object.entries(allowed).forEach(([k, vals]) => {
-    if (!vals.includes(b[k])) errs.push(`invalid ${k}`);
+  if (!b.name?.trim())     errs.push('name required');
+  if (!b.industry?.trim()) errs.push('industry required');
+  if (!b.phone?.trim())    errs.push('phone required');
+  Object.entries(ALLOWED).forEach(([k, vals]) => {
+    if (!vals.includes(b[k])) errs.push(`invalid ${k}: "${b[k]}"`);
   });
   return errs;
 }
 
-/* ── Prompt builder ──────────────────────────────────────── */
+/* ── Prompt ───────────────────────────────────────────────── */
 function buildPrompt(b) {
-  return `You are a professional marketing copywriter for small business print promotions.
+  return `You are a professional marketing copywriter specialising in small business print promotions.
 
-Business:
+Business details:
 - Name: ${b.name}
 - Industry: ${b.industry}
 - Phone: ${b.phone}
@@ -65,70 +61,63 @@ Business:
 - Website: ${b.website || 'N/A'}
 - Address: ${b.address || 'N/A'}
 - Social: ${b.social || 'N/A'}
-- Tagline provided: ${b.tagline || 'none'}
+- Provided tagline: ${b.tagline || 'none'}
 
 Campaign goal: ${b.goal}
 Design style: ${b.style}
-Language: ${b.lang}
+Language preference: ${b.lang}
 
-Generate exactly 8 unique copy variations. Each must feel distinct — vary angle, tone, and CTA.
+Generate exactly 8 unique copy variations. Each must feel distinct — vary the angle, tone, and CTA approach.
 Rules:
-- headline: max 6 words, punchy
-- cta: max 5 words, action-oriented
+- headline: max 6 words, punchy and benefit-led
+- cta: max 5 words, strong action verb
 - sub: one supporting sentence, max 12 words
-- tagline: short brand tagline (use provided tagline if given)
-- If lang is "ar" or "both": include authentic Arabic (not transliteration)
+- tagline: short memorable brand line (use provided tagline if given, otherwise create one)
+- If lang is "ar" or "both": provide authentic Arabic (never transliteration)
 - If lang is "en" only: set all *Ar fields to null
 
-Respond ONLY with a raw JSON array — no markdown, no explanation:
+Respond ONLY with a raw JSON array. No markdown fences, no explanation, nothing before or after the array:
 [
   {
     "id": 1,
-    "headline": "...",
-    "headlineAr": "...or null",
-    "cta": "...",
-    "ctaAr": "...or null",
-    "sub": "...",
-    "subAr": "...or null",
-    "tagline": "...",
-    "taglineAr": "...or null",
-    "bizNameAr": "...or null"
+    "headline":   "...",
+    "headlineAr": "... or null",
+    "cta":        "...",
+    "ctaAr":      "... or null",
+    "sub":        "...",
+    "subAr":      "... or null",
+    "tagline":    "...",
+    "taglineAr":  "... or null",
+    "bizNameAr":  "... or null"
   }
 ]`;
 }
 
-/* ── Main handler ────────────────────────────────────────── */
+/* ── Handler ─────────────────────────────────────────────── */
 module.exports = async function handler(req, res) {
-  const origin = process.env.ALLOWED_ORIGIN || '*';
-  res.setHeader('Access-Control-Allow-Origin',  origin);
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
+  setCors(res, 'POST, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST')
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== 'POST')   return res.status(405).json({ error: 'Method not allowed' });
 
-  /* Rate limit */
-  const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket?.remoteAddress || 'unknown';
+  // Auth
+  const user = await requireAuth(req, res);
+  if (!user) return;
+
+  // Rate limit by IP
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim()
+          || req.socket?.remoteAddress
+          || 'unknown';
   if (isRateLimited(ip))
-    return res.status(429).json({ error: 'Too many requests. Please wait a moment.' });
+    return res.status(429).json({ error: 'Too many requests. Please wait a moment and try again.' });
 
-  /* API key */
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    console.error('ANTHROPIC_API_KEY not set');
+    console.error('[generate-copy] ANTHROPIC_API_KEY not set');
     return res.status(500).json({ error: 'Server configuration error' });
   }
 
-  /* Parse body */
-  let body;
-  try {
-    body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-  } catch {
-    return res.status(400).json({ error: 'Invalid JSON body' });
-  }
-
-  /* Sanitise */
+  // Parse + sanitise
+  const body = parseBody(req);
   const biz = {
     name:     sanitise(body.name,     100),
     industry: sanitise(body.industry,  50),
@@ -143,15 +132,17 @@ module.exports = async function handler(req, res) {
     lang:     sanitise(body.lang,      10),
     size:     sanitise(body.size,      20),
   };
+  const qrValue = sanitise(body.qrValue || '', 500);
 
   const errors = validate(biz);
   if (errors.length > 0)
     return res.status(400).json({ error: 'Validation failed', details: errors });
 
-  /* Call Claude */
+  // Call Claude
+  let copies;
   try {
     const claudeRes = await fetch(ANTHROPIC_URL, {
-      method: 'POST',
+      method:  'POST',
       headers: {
         'Content-Type':      'application/json',
         'x-api-key':         apiKey,
@@ -165,35 +156,56 @@ module.exports = async function handler(req, res) {
     });
 
     if (!claudeRes.ok) {
-      const t = await claudeRes.text();
-      console.error('Claude API error:', claudeRes.status, t);
+      const txt = await claudeRes.text();
+      console.error('[generate-copy] Claude error:', claudeRes.status, txt.slice(0, 200));
       return res.status(502).json({ error: 'AI service error. Please try again.' });
     }
 
     const claudeData = await claudeRes.json();
     const rawText    = claudeData.content?.[0]?.text?.trim() || '';
+    const clean      = rawText
+      .replace(/^```json\s*/i, '')
+      .replace(/^```\s*/i, '')
+      .replace(/\s*```$/i, '')
+      .trim();
 
-    const clean = rawText
-      .replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
-
-    let copies;
-    try { copies = JSON.parse(clean); }
-    catch {
-      console.error('Failed to parse Claude JSON:', clean.slice(0, 200));
-      return res.status(502).json({ error: 'AI returned invalid format. Please try again.' });
+    try {
+      copies = JSON.parse(clean);
+    } catch {
+      console.error('[generate-copy] JSON parse failed:', clean.slice(0, 300));
+      return res.status(502).json({ error: 'AI returned an invalid format. Please try again.' });
     }
 
     if (!Array.isArray(copies) || copies.length === 0)
-      return res.status(502).json({ error: 'AI returned empty response. Please try again.' });
-
-    return res.status(200).json({
-      ok: true,
-      generationId: `gen_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-      copies,
-    });
+      return res.status(502).json({ error: 'AI returned an empty response. Please try again.' });
 
   } catch (err) {
-    console.error('Unexpected error in generate-copy:', err);
+    console.error('[generate-copy] Unexpected error:', err.message);
     return res.status(500).json({ error: 'Internal server error' });
   }
+
+  // Persist project — service role bypasses RLS; user_id from JWT (not client input)
+  const generationId = `gen_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  const { error: dbErr } = await supabaseAdmin
+    .from('projects')
+    .insert({
+      id:         generationId,
+      user_id:    user.id,          // always from verified JWT
+      qr_value:   qrValue || 'https://example.com',
+      biz_data:   biz,
+      copies,
+      selections: {
+        goal:  biz.goal,
+        style: biz.style,
+        lang:  biz.lang,
+        size:  biz.size,
+      },
+    });
+
+  if (dbErr) {
+    // Non-fatal: log and continue — the user still gets their designs
+    console.error('[generate-copy] DB insert error (non-fatal):', dbErr.message);
+  }
+
+  return res.status(200).json({ ok: true, generationId, copies });
 };
