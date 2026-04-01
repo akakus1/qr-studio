@@ -9,7 +9,13 @@
     { "src": "/api/auth/(.*)",     "dest": "/api/auth/$1"     },
     { "src": "/api/orders/(.*)",   "dest": "/api/orders/$1"   },
     { "src": "/api/(.*)",          "dest": "/api/$1"          },
-    { "src": "/(.*)",              "dest": "/public/$1"       }
+    { "src": "/signin",             "dest": "/public/auth.html"      },
+    { "src": "/login",              "dest": "/public/auth.html"      },
+    { "src": "/register",           "dest": "/public/auth.html"      },
+    { "src": "/dashboard",          "dest": "/public/dashboard.html" },
+    { "src": "/pro",                "dest": "/public/promo.html"     },
+    { "src": "/promo",              "dest": "/public/promo.html"     },
+    { "src": "/(.*)",               "dest": "/public/$1"             }
   ],
   "headers": [
     {
