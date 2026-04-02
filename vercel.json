@@ -1,28 +1,19 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "api/**/*.js", "use": "@vercel/node" },
-    { "src": "public/**",   "use": "@vercel/static" }
-  ],
-  "routes": [
-    { "src": "/api/webhooks/(.*)", "dest": "/api/webhooks/$1" },
-    { "src": "/api/auth/(.*)",     "dest": "/api/auth/$1"     },
-    { "src": "/api/orders/(.*)",   "dest": "/api/orders/$1"   },
-    { "src": "/api/(.*)",          "dest": "/api/$1"          },
-    { "src": "/signin",             "dest": "/public/auth.html"      },
-    { "src": "/login",              "dest": "/public/auth.html"      },
-    { "src": "/register",           "dest": "/public/auth.html"      },
-    { "src": "/dashboard",          "dest": "/public/dashboard.html" },
-    { "src": "/pro",                "dest": "/public/promo.html"     },
-    { "src": "/promo",              "dest": "/public/promo.html"     },
-    { "src": "/(.*)",               "dest": "/public/$1"             }
+  "rewrites": [
+    { "source": "/signin",    "destination": "/public/auth.html"      },
+    { "source": "/login",     "destination": "/public/auth.html"      },
+    { "source": "/register",  "destination": "/public/auth.html"      },
+    { "source": "/dashboard", "destination": "/public/dashboard.html" },
+    { "source": "/pro",       "destination": "/public/promo.html"     },
+    { "source": "/promo",     "destination": "/public/promo.html"     }
   ],
   "headers": [
     {
-      "source": "/api/(?!webhooks)(.*)",
+      "source": "/api/(.*)",
       "headers": [
         { "key": "Access-Control-Allow-Origin",  "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
       ]
     }
