@@ -627,11 +627,25 @@ const TR_IDX = {
   function closeMenu() { isOpen = false; menu.classList.remove('open'); }
 
   function applyLang(lang) {
-    window.QRStudio.setLang(lang, TR_IDX);
+    // Apply translations directly without depending on app.js
+    const html = document.documentElement;
+    html.setAttribute('lang', lang);
+    html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+      const entry = TR_IDX[el.dataset.i18n];
+      if (entry) el.textContent = entry[lang] || entry['en'] || el.textContent;
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+      const entry = TR_IDX[el.dataset.i18nPlaceholder];
+      if (entry) el.placeholder = entry[lang] || entry['en'] || el.placeholder;
+    });
+    if (TR_IDX.page_title) document.title = (TR_IDX.page_title[lang] || TR_IDX.page_title['en']);
     btn.textContent = (LANG_LABELS[lang] || lang.toUpperCase()) + ' ▾';
     opts.forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
     localStorage.setItem('qrs_lang', lang);
     closeMenu();
+    // Also update QRStudio if available
+    if (window.QRStudio && window.QRStudio.setLang) window.QRStudio.setLang(lang, TR_IDX);
   }
 
   btn.addEventListener('click', function() {
