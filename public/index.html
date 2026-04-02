@@ -239,13 +239,13 @@ footer{text-align:center;padding:32px 24px;color:var(--tdim);font-size:.78rem;bo
   <div class="lang-dropdown" id="lang-dropdown">
     <button class="lang-btn" id="lang-current" type="button">EN ▾</button>
     <div class="lang-menu" id="lang-menu">
-      <button class="lang-opt active" data-lang="en" type="button">🇬🇧 English</button>
-      <button class="lang-opt" data-lang="ar" type="button">🇸🇦 العربية</button>
-      <button class="lang-opt" data-lang="fr" type="button">🇫🇷 Français</button>
-      <button class="lang-opt" data-lang="es" type="button">🇪🇸 Español</button>
-      <button class="lang-opt" data-lang="de" type="button">🇩🇪 Deutsch</button>
-      <button class="lang-opt" data-lang="tr" type="button">🇹🇷 Türkçe</button>
-      <button class="lang-opt" data-lang="zh" type="button">🇨🇳 中文</button>
+      <a class="lang-opt active" data-lang="en" href="?lang=en">🇬🇧 English</a>
+      <a class="lang-opt" data-lang="ar" href="?lang=ar">🇸🇦 العربية</a>
+      <a class="lang-opt" data-lang="fr" href="?lang=fr">🇫🇷 Français</a>
+      <a class="lang-opt" data-lang="es" href="?lang=es">🇪🇸 Español</a>
+      <a class="lang-opt" data-lang="de" href="?lang=de">🇩🇪 Deutsch</a>
+      <a class="lang-opt" data-lang="tr" href="?lang=tr">🇹🇷 Türkçe</a>
+      <a class="lang-opt" data-lang="zh" href="?lang=zh">🇨🇳 中文</a>
     </div>
   </div>
 </nav>
@@ -620,6 +620,7 @@ const TR_IDX = {
   const btn  = document.getElementById('lang-current');
   const menu = document.getElementById('lang-menu');
   const opts = document.querySelectorAll('.lang-opt');
+  const dropdown = document.getElementById('lang-dropdown');
   let isOpen = false;
 
   function openMenu()  { isOpen = true;  menu.classList.add('open'); }
@@ -633,13 +634,13 @@ const TR_IDX = {
     closeMenu();
   }
 
-  const dropdown = document.getElementById('lang-dropdown');
-
   btn.addEventListener('click', function() {
     isOpen ? closeMenu() : openMenu();
   });
 
-  opts.forEach(o => o.addEventListener('click', function() {
+  // Handle anchor clicks - prevent navigation, apply lang instead
+  opts.forEach(o => o.addEventListener('click', function(e) {
+    e.preventDefault();
     applyLang(o.dataset.lang);
   }));
 
@@ -647,10 +648,13 @@ const TR_IDX = {
     if (isOpen && !dropdown.contains(e.target)) closeMenu();
   });
 
-  // Init
-  const saved = localStorage.getItem('qrs_lang') || navigator.language.slice(0,2) || 'en';
+  // Init: check URL param first, then localStorage, then browser lang
   const supported = ['en','ar','fr','es','de','tr','zh'];
+  const urlLang = new URLSearchParams(location.search).get('lang');
+  const saved = urlLang || localStorage.getItem('qrs_lang') || navigator.language.slice(0,2) || 'en';
   applyLang(supported.includes(saved) ? saved : 'en');
+  // Clean URL param without reload
+  if (urlLang && history.replaceState) history.replaceState(null,'', location.pathname);
 })();
 
 
