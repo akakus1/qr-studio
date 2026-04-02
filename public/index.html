@@ -652,10 +652,11 @@ const TR_IDX = {
     isOpen ? closeMenu() : openMenu();
   });
 
-  // Handle anchor clicks - prevent navigation, apply lang instead
+  // Handle anchor clicks - apply lang and allow navigation (page reload with ?lang=XX)
   opts.forEach(o => o.addEventListener('click', function(e) {
-    e.preventDefault();
-    applyLang(o.dataset.lang);
+    // Don't prevent default - let the href reload the page with ?lang=XX
+    // applyLang will be called on page load via urlLang detection below
+    closeMenu();
   }));
 
   document.addEventListener('click', function(e) {
