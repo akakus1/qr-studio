@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard.html
+Disallow: /auth.html
+
+# Sitemap location
+Sitemap: https://www.getqrdesign.com/sitemap.xml
