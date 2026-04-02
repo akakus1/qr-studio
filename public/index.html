@@ -633,18 +633,18 @@ const TR_IDX = {
     closeMenu();
   }
 
-  btn.addEventListener('pointerdown', function(e) {
-    e.preventDefault();
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
     isOpen ? closeMenu() : openMenu();
   });
 
-  opts.forEach(o => o.addEventListener('pointerdown', function(e) {
-    e.preventDefault();
+  opts.forEach(o => o.addEventListener('click', function(e) {
+    e.stopPropagation();
     applyLang(o.dataset.lang);
   }));
 
-  document.addEventListener('pointerdown', function(e) {
-    if (!btn.contains(e.target) && !menu.contains(e.target)) closeMenu();
+  document.addEventListener('click', function() {
+    if (isOpen) closeMenu();
   });
 
   // Init
