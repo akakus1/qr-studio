@@ -633,18 +633,18 @@ const TR_IDX = {
     closeMenu();
   }
 
-  btn.addEventListener('click', function(e) {
-    e.stopPropagation();
+  const dropdown = document.getElementById('lang-dropdown');
+
+  btn.addEventListener('click', function() {
     isOpen ? closeMenu() : openMenu();
   });
 
-  opts.forEach(o => o.addEventListener('click', function(e) {
-    e.stopPropagation();
+  opts.forEach(o => o.addEventListener('click', function() {
     applyLang(o.dataset.lang);
   }));
 
-  document.addEventListener('click', function() {
-    if (isOpen) closeMenu();
+  document.addEventListener('click', function(e) {
+    if (isOpen && !dropdown.contains(e.target)) closeMenu();
   });
 
   // Init
