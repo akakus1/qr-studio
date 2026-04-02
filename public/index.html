@@ -652,7 +652,12 @@ const TR_IDX = {
   const supported = ['en','ar','fr','es','de','tr','zh'];
   const urlLang = new URLSearchParams(location.search).get('lang');
   const saved = urlLang || localStorage.getItem('qrs_lang') || navigator.language.slice(0,2) || 'en';
-  applyLang(supported.includes(saved) ? saved : 'en');
+  try {
+    applyLang(supported.includes(saved) ? saved : 'en');
+  } catch(e) {
+    document.title = 'ERR:' + e.message;
+    console.error('applyLang error:', e);
+  }
   // Clean URL param without reload
   if (urlLang && history.replaceState) history.replaceState(null,'', location.pathname);
 })();
