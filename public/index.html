@@ -626,10 +626,14 @@ const TR_IDX = {
     summary.textContent = (LANG_LABELS[lang] || lang.toUpperCase()) + ' ▾';
     opts.forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
     localStorage.setItem('qrs_lang', lang);
-    setTimeout(() => details.removeAttribute('open'), 0);
+    details.open = false;
   }
 
-  opts.forEach(o => o.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); applyLang(o.dataset.lang); }));
+  // Use event delegation on the menu container
+  document.getElementById('lang-menu').addEventListener('click', function(e) {
+    const opt = e.target.closest('.lang-opt');
+    if (opt) applyLang(opt.dataset.lang);
+  });
 
   // Init
   const saved = localStorage.getItem('qrs_lang') || navigator.language.slice(0,2) || 'en';
