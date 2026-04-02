@@ -626,10 +626,10 @@ const TR_IDX = {
     summary.textContent = (LANG_LABELS[lang] || lang.toUpperCase()) + ' ▾';
     opts.forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
     localStorage.setItem('qrs_lang', lang);
-    details.removeAttribute('open');
+    setTimeout(() => details.removeAttribute('open'), 0);
   }
 
-  opts.forEach(o => o.addEventListener('click', () => applyLang(o.dataset.lang)));
+  opts.forEach(o => o.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); applyLang(o.dataset.lang); }));
 
   // Init
   const saved = localStorage.getItem('qrs_lang') || navigator.language.slice(0,2) || 'en';
