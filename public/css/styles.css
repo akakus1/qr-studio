@@ -99,7 +99,6 @@ html[dir="rtl"] .lang-bar { right: auto; left: 22px; }
 }
 html[dir="rtl"] .lang-menu { right: auto; left: 0; }
 .lang-menu.open { display: block; }
-.lang-dropdown:focus-within .lang-menu { display: block; }
 
 .lang-opt {
   display: block; width: 100%;

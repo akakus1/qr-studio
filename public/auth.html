@@ -152,23 +152,29 @@ const TR_AUTH = {
 /* ── Language dropdown ── */
 (function() {
   const LANG_LABELS = {en:'🇬🇧 EN',ar:'🇸🇦 AR',fr:'🇫🇷 FR',es:'🇪🇸 ES',de:'🇩🇪 DE',tr:'🇹🇷 TR',zh:'🇨🇳 中文'};
-  const btn  = document.getElementById('lang-current-auth');
-  const menu = document.getElementById('lang-menu-auth');
-  const opts = document.querySelectorAll('.lang-opt');
+  const btn      = document.getElementById('lang-current-auth');
+  const menu     = document.getElementById('lang-menu-auth');
+  const dropdown = menu.parentElement;
+  const opts     = dropdown.querySelectorAll('.lang-opt');
+  let isOpen = false;
+
+  function openMenu()  { isOpen = true;  menu.classList.add('open'); }
+  function closeMenu() { isOpen = false; menu.classList.remove('open'); }
 
   function applyLang(lang) {
-    QRStudio.setLang(lang, TR_AUTH, 'auth-wrapper');
+    window.QRStudio.setLang(lang, TR_AUTH, 'auth-wrapper');
     btn.textContent = (LANG_LABELS[lang] || lang.toUpperCase()) + ' ▾';
     opts.forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
     localStorage.setItem('qrs_lang', lang);
-    menu.classList.remove('open');
+    closeMenu();
   }
 
-  btn.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.toggle('open'); });
-  opts.forEach(o => o.addEventListener('click', () => applyLang(o.dataset.lang)));
-  document.addEventListener('click', () => menu.classList.remove('open'));
+  btn.addEventListener('click', function() { isOpen ? closeMenu() : openMenu(); });
+  opts.forEach(o => o.addEventListener('click', function(e) { e.preventDefault(); applyLang(o.dataset.lang); }));
+  document.addEventListener('click', function(e) { if (isOpen && !dropdown.contains(e.target)) closeMenu(); });
 
-  const saved = localStorage.getItem('qrs_lang') || navigator.language.slice(0,2) || 'en';
+  const urlLang = new URLSearchParams(location.search).get('lang');
+  const saved = urlLang || localStorage.getItem('qrs_lang') || navigator.language.slice(0,2) || 'en';
   const supported = ['en','ar','fr','es','de','tr','zh'];
   applyLang(supported.includes(saved) ? saved : 'en');
 })();

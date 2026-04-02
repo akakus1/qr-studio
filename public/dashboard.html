@@ -420,11 +420,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
 /* ── Dashboard language dropdown ── */
 (function() {
-  const LANG_LABELS = {en:'\ud83c\uddec\ud83c\udde7 EN',ar:'\ud83c\uddf8\ud83c\udde6 AR',fr:'\ud83c\uddeb\ud83c\uddf7 FR',es:'\ud83c\uddea\ud83c\uddf8 ES',de:'\ud83c\udde9\ud83c\uddea DE',tr:'\ud83c\uddf9\ud83c\uddf7 TR',zh:'\ud83c\udde8\ud83c\uddf3 \u4e2d\u6587'};
-  const btn  = document.getElementById('lang-current-dash');
-  const menu = document.getElementById('lang-menu-dash');
-  const opts = document.querySelectorAll('.lang-opt');
+  const LANG_LABELS = {en:'🇬🇧 EN',ar:'🇸🇦 AR',fr:'🇫🇷 FR',es:'🇪🇸 ES',de:'🇩🇪 DE',tr:'🇹🇷 TR',zh:'🇨🇳 中文'};
+  const btn      = document.getElementById('lang-current-dash');
+  const menu     = document.getElementById('lang-menu-dash');
+  const dropdown = menu ? menu.parentElement : null;
+  const opts     = dropdown ? dropdown.querySelectorAll('.lang-opt') : [];
   if (!btn || !menu) return;
+  let isOpen = false;
+
+  function openMenu()  { isOpen = true;  menu.classList.add('open'); }
+  function closeMenu() { isOpen = false; menu.classList.remove('open'); }
 
   function applyLang(lang) {
     const html = document.documentElement;
@@ -433,14 +438,15 @@ window.addEventListener('DOMContentLoaded', () => {
     btn.innerHTML = (LANG_LABELS[lang] || lang.toUpperCase()) + ' &#9662;';
     opts.forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
     localStorage.setItem('qrs_lang', lang);
-    menu.classList.remove('open');
+    closeMenu();
   }
 
-  btn.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.toggle('open'); });
-  opts.forEach(o => o.addEventListener('click', () => applyLang(o.dataset.lang)));
-  document.addEventListener('click', () => menu.classList.remove('open'));
+  btn.addEventListener('click', function() { isOpen ? closeMenu() : openMenu(); });
+  opts.forEach(o => o.addEventListener('click', function(e) { e.preventDefault(); applyLang(o.dataset.lang); }));
+  document.addEventListener('click', function(e) { if (isOpen && dropdown && !dropdown.contains(e.target)) closeMenu(); });
 
-  const saved = localStorage.getItem('qrs_lang') || navigator.language.slice(0,2) || 'en';
+  const urlLang = new URLSearchParams(location.search).get('lang');
+  const saved = urlLang || localStorage.getItem('qrs_lang') || navigator.language.slice(0,2) || 'en';
   const supported = ['en','ar','fr','es','de','tr','zh'];
   applyLang(supported.includes(saved) ? saved : 'en');
 })();
