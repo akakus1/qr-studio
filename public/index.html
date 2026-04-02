@@ -236,8 +236,8 @@ footer{text-align:center;padding:32px 24px;color:var(--tdim);font-size:.78rem;bo
 <div id="nav-auth"></div>
 
 <nav class="lang-bar">
-  <div class="lang-dropdown" id="lang-dropdown">
-    <button class="lang-btn active" id="lang-current">EN ▾</button>
+  <details class="lang-dropdown" id="lang-dropdown">
+    <summary class="lang-btn" id="lang-current">EN ▾</summary>
     <div class="lang-menu" id="lang-menu">
       <button class="lang-opt active" data-lang="en">🇬🇧 English</button>
       <button class="lang-opt" data-lang="ar">🇸🇦 العربية</button>
@@ -247,7 +247,7 @@ footer{text-align:center;padding:32px 24px;color:var(--tdim);font-size:.78rem;bo
       <button class="lang-opt" data-lang="tr">🇹🇷 Türkçe</button>
       <button class="lang-opt" data-lang="zh">🇨🇳 中文</button>
     </div>
-  </div>
+  </details>
 </nav>
 
 <div class="page" id="main-wrapper">
@@ -617,30 +617,19 @@ const TR_IDX = {
 /* ── Language dropdown logic ── */
 (function() {
   const LANG_LABELS = {en:'🇬🇧 EN',ar:'🇸🇦 AR',fr:'🇫🇷 FR',es:'🇪🇸 ES',de:'🇩🇪 DE',tr:'🇹🇷 TR',zh:'🇨🇳 中文'};
-  const btn    = document.getElementById('lang-current');
-  const menu   = document.getElementById('lang-menu');
-  const opts   = document.querySelectorAll('.lang-opt');
+  const details = document.getElementById('lang-dropdown');
+  const summary = document.getElementById('lang-current');
+  const opts    = document.querySelectorAll('.lang-opt');
 
   function applyLang(lang) {
     QRStudio.setLang(lang, TR_IDX);
-    btn.textContent = (LANG_LABELS[lang] || lang.toUpperCase()) + ' ▾';
+    summary.textContent = (LANG_LABELS[lang] || lang.toUpperCase()) + ' ▾';
     opts.forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
     localStorage.setItem('qrs_lang', lang);
-    menu.classList.remove('open');
+    details.removeAttribute('open');
   }
 
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    menu.classList.toggle('open');
-  });
-
-  opts.forEach(o => o.addEventListener('click', (e) => { e.stopPropagation(); applyLang(o.dataset.lang); }));
-
-  document.addEventListener('mousedown', (e) => {
-    if (!btn.contains(e.target) && !menu.contains(e.target)) {
-      menu.classList.remove('open');
-    }
-  });
+  opts.forEach(o => o.addEventListener('click', () => applyLang(o.dataset.lang)));
 
   // Init
   const saved = localStorage.getItem('qrs_lang') || navigator.language.slice(0,2) || 'en';

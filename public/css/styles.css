@@ -66,7 +66,9 @@ body {
 html[dir="rtl"] .lang-bar { right: auto; left: 22px; }
 
 /* Dropdown wrapper */
-.lang-dropdown { position: relative; }
+.lang-dropdown { position: relative; list-style: none; }
+.lang-dropdown summary { list-style: none; }
+.lang-dropdown summary::-webkit-details-marker { display: none; }
 
 .lang-btn {
   display: flex; align-items: center; gap: 6px;
@@ -99,6 +101,7 @@ html[dir="rtl"] .lang-bar { right: auto; left: 22px; }
 }
 html[dir="rtl"] .lang-menu { right: auto; left: 0; }
 .lang-menu.open { display: block; }
+details[open] > .lang-menu { display: block; }
 
 .lang-opt {
   display: block; width: 100%;
