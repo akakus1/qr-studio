@@ -9,6 +9,9 @@ const RTL_LANGS = ['ar'];
 const SUPPORTED_LANGS = ['en', 'ar', 'fr', 'es', 'de', 'tr', 'zh'];
 
 let _lang = (function() {
+  // URL param has highest priority
+  const urlParam = new URLSearchParams(location.search).get('lang');
+  if (urlParam && SUPPORTED_LANGS.includes(urlParam)) return urlParam;
   const saved = localStorage.getItem('qrs_lang') || localStorage.getItem('qr_lang');
   if (saved && SUPPORTED_LANGS.includes(saved)) return saved;
   const browser = (navigator.language || 'en').slice(0, 2).toLowerCase();
