@@ -139,6 +139,13 @@ html[dir="rtl"] .copy-btn{right:auto;left:14px;}
 .logo-preview button{background:none;border:none;color:var(--tmuted);cursor:pointer;font-size:.75rem;margin-left:auto;}
 .logo-preview button:hover{color:#EF4444;}
 
+/* ── Live Preview ── */
+.live-preview-wrap{display:none;align-items:center;gap:16px;background:rgba(22,31,48,0.6);border:1px solid var(--border);border-radius:var(--r12);padding:14px 18px;margin-bottom:20px;animation:fadeUp .3s ease both;}
+.live-preview-label{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--purpleL);flex:1;}
+.live-preview-cont{width:80px;height:80px;border-radius:8px;overflow:hidden;background:#fff;padding:4px;flex-shrink:0;}
+.live-preview-cont img,.live-preview-cont canvas{width:72px!important;height:72px!important;}
+.live-badge{display:inline-flex;align-items:center;gap:5px;font-size:.65rem;font-weight:700;color:var(--green);}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s ease infinite;}
 .btn-gen{width:100%;background:linear-gradient(135deg,#7C3AED 0%,#5B21B6 50%,#7C3AED 100%);background-size:200% 100%;border:none;border-radius:var(--r12);color:#fff;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:18px 32px;cursor:pointer;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:12px;transition:all var(--tr);box-shadow:0 4px 24px rgba(124,58,237,0.4);}
 .btn-gen::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transform:skewX(-18deg);transition:left .65s ease;}
 .btn-gen:hover{background-position:right center;box-shadow:0 8px 40px rgba(124,58,237,0.6);transform:translateY(-2px);}
@@ -429,6 +436,15 @@ footer{text-align:center;padding:32px 24px;color:var(--tdim);font-size:.78rem;bo
       </div>
     </div>
 
+    <!-- Live Preview Widget -->
+    <div class="live-preview-wrap" id="live-preview-wrap">
+      <div style="flex:1;">
+        <div class="live-preview-label">Live Preview</div>
+        <div class="live-badge"><span class="live-dot"></span> Auto-updating</div>
+      </div>
+      <div class="live-preview-cont" id="live-preview-cont"></div>
+    </div>
+
     <button class="btn-gen" id="gen-btn">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"/></svg>
       <span id="btn-label" data-i18n="btn_generate">Generate QR Code</span>
@@ -639,14 +655,16 @@ document.getElementById('custom-toggle').addEventListener('click', function() {
 });
 
 /* ── Color Pickers ── */
-document.getElementById('color-dark').addEventListener('input', function() {
-  colorDark = this.value;
-  document.getElementById('color-dark-hex').textContent = this.value;
-});
-document.getElementById('color-light').addEventListener('input', function() {
-  colorLight = this.value;
-  document.getElementById('color-light-hex').textContent = this.value;
-});
+  document.getElementById('color-dark').addEventListener('input', function() {
+    colorDark = this.value;
+    document.getElementById('color-dark-hex').textContent = this.value;
+    debouncedLivePreview();
+  });
+  document.getElementById('color-light').addEventListener('input', function() {
+    colorLight = this.value;
+    document.getElementById('color-light-hex').textContent = this.value;
+    debouncedLivePreview();
+  });
 
 /* ── Logo Upload ── */
 document.getElementById('logo-input').addEventListener('change', function() {
@@ -679,6 +697,34 @@ document.getElementById('copy-btn-phone')?.addEventListener('click', () => {
   if (!v) return;
   navigator.clipboard.writeText(v).then(() => QRStudio.showToast(QRStudio.t('toast_copied', TR_IDX))).catch(() => {});
 });
+
+/* ── Live Preview (debounced) ── */
+let _liveTimer = null;
+function debouncedLivePreview() {
+  clearTimeout(_liveTimer);
+  _liveTimer = setTimeout(() => {
+    const value = buildQRContent();
+    if (!value) return;
+    const prev = document.getElementById('live-preview-cont');
+    if (!prev) return;
+    prev.innerHTML = '';
+    new QRCode(prev, {
+      text: value,
+      width: 120, height: 120,
+      colorDark: colorDark,
+      colorLight: colorLight,
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    document.getElementById('live-preview-wrap').style.display = 'flex';
+  }, 400);
+}
+
+// Attach live preview to all inputs
+function attachLivePreview() {
+  const inputs = document.querySelectorAll('.type-panel input, .type-panel textarea, .type-panel select');
+  inputs.forEach(el => el.addEventListener('input', debouncedLivePreview));
+}
+document.addEventListener('DOMContentLoaded', attachLivePreview);
 
 /* ── Build QR Content by Type ── */
 function buildQRContent() {
@@ -798,6 +844,23 @@ function generateQR() {
       promoBanner.href = `/promo.html?qr=${encodeURIComponent(value)}`;
       promoBanner.style.display = 'block';
       QRStudio.saveLastQR(value);
+      // Save QR to database if logged in
+      if (window.QRAuth && QRAuth.isLoggedIn()) {
+        const token = localStorage.getItem('qr_token');
+        if (token) {
+          fetch('/api/qr/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify({
+              name: currentType.toUpperCase() + ' QR - ' + new Date().toLocaleDateString(),
+              type: currentType,
+              content: value,
+              color: colorDark,
+              bg_color: colorLight
+            })
+          }).catch(() => {});
+        }
+      }
       // Show payment prompt after QR is generated
       setTimeout(() => showPaymentModal(value), 1500);
     } catch(e) { QRStudio.showToast(QRStudio.t('toast_err', TR_IDX)); }
