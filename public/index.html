@@ -236,18 +236,18 @@ footer{text-align:center;padding:32px 24px;color:var(--tdim);font-size:.78rem;bo
 <div id="nav-auth"></div>
 
 <nav class="lang-bar">
-  <details class="lang-dropdown" id="lang-dropdown">
-    <summary class="lang-btn" id="lang-current">EN ▾</summary>
+  <div class="lang-dropdown" id="lang-dropdown">
+    <button class="lang-btn" id="lang-current" type="button">EN ▾</button>
     <div class="lang-menu" id="lang-menu">
-      <button class="lang-opt active" data-lang="en">🇬🇧 English</button>
-      <button class="lang-opt" data-lang="ar">🇸🇦 العربية</button>
-      <button class="lang-opt" data-lang="fr">🇫🇷 Français</button>
-      <button class="lang-opt" data-lang="es">🇪🇸 Español</button>
-      <button class="lang-opt" data-lang="de">🇩🇪 Deutsch</button>
-      <button class="lang-opt" data-lang="tr">🇹🇷 Türkçe</button>
-      <button class="lang-opt" data-lang="zh">🇨🇳 中文</button>
+      <button class="lang-opt active" data-lang="en" type="button">🇬🇧 English</button>
+      <button class="lang-opt" data-lang="ar" type="button">🇸🇦 العربية</button>
+      <button class="lang-opt" data-lang="fr" type="button">🇫🇷 Français</button>
+      <button class="lang-opt" data-lang="es" type="button">🇪🇸 Español</button>
+      <button class="lang-opt" data-lang="de" type="button">🇩🇪 Deutsch</button>
+      <button class="lang-opt" data-lang="tr" type="button">🇹🇷 Türkçe</button>
+      <button class="lang-opt" data-lang="zh" type="button">🇨🇳 中文</button>
     </div>
-  </details>
+  </div>
 </nav>
 
 <div class="page" id="main-wrapper">
@@ -617,22 +617,34 @@ const TR_IDX = {
 /* ── Language dropdown logic ── */
 (function() {
   const LANG_LABELS = {en:'🇬🇧 EN',ar:'🇸🇦 AR',fr:'🇫🇷 FR',es:'🇪🇸 ES',de:'🇩🇪 DE',tr:'🇹🇷 TR',zh:'🇨🇳 中文'};
-  const details = document.getElementById('lang-dropdown');
-  const summary = document.getElementById('lang-current');
-  const opts    = document.querySelectorAll('.lang-opt');
+  const btn  = document.getElementById('lang-current');
+  const menu = document.getElementById('lang-menu');
+  const opts = document.querySelectorAll('.lang-opt');
+  let isOpen = false;
+
+  function openMenu()  { isOpen = true;  menu.classList.add('open'); }
+  function closeMenu() { isOpen = false; menu.classList.remove('open'); }
 
   function applyLang(lang) {
     QRStudio.setLang(lang, TR_IDX);
-    summary.textContent = (LANG_LABELS[lang] || lang.toUpperCase()) + ' ▾';
+    btn.textContent = (LANG_LABELS[lang] || lang.toUpperCase()) + ' ▾';
     opts.forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
     localStorage.setItem('qrs_lang', lang);
-    details.open = false;
+    closeMenu();
   }
 
-  // Use event delegation on the menu container
-  document.getElementById('lang-menu').addEventListener('click', function(e) {
-    const opt = e.target.closest('.lang-opt');
-    if (opt) applyLang(opt.dataset.lang);
+  btn.addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    isOpen ? closeMenu() : openMenu();
+  });
+
+  opts.forEach(o => o.addEventListener('mousedown', function(e) {
+    e.preventDefault();
+    applyLang(o.dataset.lang);
+  }));
+
+  document.addEventListener('mousedown', function(e) {
+    if (!btn.contains(e.target) && !menu.contains(e.target)) closeMenu();
   });
 
   // Init

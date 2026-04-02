@@ -66,9 +66,7 @@ body {
 html[dir="rtl"] .lang-bar { right: auto; left: 22px; }
 
 /* Dropdown wrapper */
-.lang-dropdown { position: relative; list-style: none; }
-.lang-dropdown summary { list-style: none; }
-.lang-dropdown summary::-webkit-details-marker { display: none; }
+.lang-dropdown { position: relative; }
 
 .lang-btn {
   display: flex; align-items: center; gap: 6px;
