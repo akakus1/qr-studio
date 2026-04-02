@@ -633,17 +633,17 @@ const TR_IDX = {
     closeMenu();
   }
 
-  btn.addEventListener('mousedown', function(e) {
+  btn.addEventListener('pointerdown', function(e) {
     e.preventDefault();
     isOpen ? closeMenu() : openMenu();
   });
 
-  opts.forEach(o => o.addEventListener('mousedown', function(e) {
+  opts.forEach(o => o.addEventListener('pointerdown', function(e) {
     e.preventDefault();
     applyLang(o.dataset.lang);
   }));
 
-  document.addEventListener('mousedown', function(e) {
+  document.addEventListener('pointerdown', function(e) {
     if (!btn.contains(e.target) && !menu.contains(e.target)) closeMenu();
   });
 
