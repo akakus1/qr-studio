@@ -150,33 +150,6 @@ html[dir="rtl"] .faq-q{text-align:right;}
 .faq-item.open .faq-a{display:block;}
 
 footer{text-align:center;padding:32px 24px;color:var(--tdim);font-size:.78rem;border-top:1px solid var(--border);position:relative;z-index:1;}
-
-/* ── Modals ── */
-.modal-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;}
-.modal-box{background:var(--s1);border:1px solid var(--bp);border-radius:24px;padding:36px 32px;max-width:480px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.6);animation:scaleIn .3s var(--ease) both;}
-.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--tmuted);cursor:pointer;font-size:1.2rem;line-height:1;padding:4px;}
-.modal-close:hover{color:var(--white);}
-.modal-icon{font-size:2.5rem;margin-bottom:16px;text-align:center;}
-.modal-title{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--white);text-align:center;margin-bottom:10px;}
-.modal-sub{font-size:.9rem;color:var(--tmuted);text-align:center;line-height:1.6;margin-bottom:28px;}
-.modal-btn-primary{width:100%;background:linear-gradient(135deg,#7C3AED,#5B21B6);border:none;border-radius:var(--r12);color:#fff;font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;padding:15px;cursor:pointer;transition:all var(--tr);margin-bottom:10px;}
-.modal-btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(124,58,237,0.5);}
-.modal-btn-secondary{width:100%;background:none;border:1px solid var(--border);border-radius:var(--r12);color:var(--tmuted);font-family:'DM Sans',sans-serif;font-size:.88rem;padding:13px;cursor:pointer;transition:all var(--tr);}
-.modal-btn-secondary:hover{border-color:var(--bp);color:var(--t2);}
-/* Payment Plans */
-.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
-.plan-card{background:var(--s2);border:1.5px solid var(--border);border-radius:16px;padding:20px 12px;text-align:center;cursor:pointer;transition:all var(--tr);position:relative;}
-.plan-card:hover{border-color:var(--bp);background:var(--pdim);transform:translateY(-3px);}
-.plan-card.popular{border-color:var(--amber);}
-.plan-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--amber),#f97316);color:#000;font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:var(--rfull);white-space:nowrap;}
-.plan-price{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--white);margin-bottom:4px;}
-.plan-label{font-size:.75rem;color:var(--tmuted);margin-bottom:12px;}
-.plan-features{font-size:.72rem;color:var(--t2);line-height:1.8;text-align:left;}
-.plan-features li{list-style:none;padding-left:14px;position:relative;}
-.plan-features li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:700;}
-.free-continue{text-align:center;margin-top:8px;}
-.free-continue button{background:none;border:none;color:var(--tmuted);font-size:.82rem;cursor:pointer;text-decoration:underline;}
-.free-continue button:hover{color:var(--t2);}
 @media(max-width:640px){
   .gen-card{padding:28px 22px;}
   .hero{padding:100px 20px 60px;}
@@ -208,7 +181,7 @@ footer{text-align:center;padding:32px 24px;color:var(--tdim);font-size:.78rem;bo
   <p class="hero-sub" data-i18n="subtitle">Enter any URL, text, phone number, or email — get a download-ready QR code in seconds.</p>
   <div class="stats">
     <div class="stat-pill"><span class="dot g"></span><span data-i18n="stat_free">100% Free</span></div>
-    <div class="stat-pill"><span class="dot p"></span><span data-i18n="stat_no_login">Free Account Required</span></div>
+    <div class="stat-pill"><span class="dot p"></span><span data-i18n="stat_no_login">No Login Required</span></div>
     <div class="stat-pill"><span class="dot a"></span><span data-i18n="stat_instant">Instant Download</span></div>
   </div>
 
@@ -488,7 +461,7 @@ const TR_IDX = {
   h1_line2:         {en:'Instantly. Free.',ar:'فوراً. مجاناً.'},
   subtitle:         {en:'Enter any URL, Wi-Fi, vCard, email or phone — get a download-ready QR code in seconds.',ar:'أدخل رابطاً أو واي فاي أو بطاقة اتصال أو بريداً أو هاتفاً — واحصل على رمز QR جاهز للتحميل في ثوانٍ.'},
   stat_free:        {en:'100% Free',ar:'مجاني 100٪'},
-  stat_no_login:    {en:'Free Account Required',ar:'لا يلزم تسجيل دخول'},
+  stat_no_login:    {en:'No Login Required',ar:'لا يلزم تسجيل دخول'},
   stat_instant:     {en:'Instant Download',ar:'تحميل فوري'},
   card_title:       {en:'QR Code Generator',ar:'منشئ رمز QR'},
   tab_url:          {en:'URL',ar:'رابط'},
@@ -534,7 +507,7 @@ const TR_IDX = {
   promo_desc:       {en:'AI-generated print-ready business designs in seconds.',ar:'تصاميم ترويجية جاهزة للطباعة بالذكاء الاصطناعي.'},
   feat_1:           {en:'High error correction',ar:'تصحيح خطأ عالٍ'},
   feat_2:           {en:'URL, Wi-Fi, vCard, email, phone',ar:'روابط وواي فاي وبطاقة وبريد وهاتف'},
-  feat_3:           {en:'PNG & SVG download · Free account',ar:'تحميل PNG و SVG · حساب مجاني'},
+  feat_3:           {en:'PNG & SVG download · No account',ar:'تحميل PNG و SVG · بدون حساب'},
   feat_4:           {en:'Custom colors & logo',ar:'ألوان وشعار مخصص'},
   faq_title:        {en:'Frequently Asked Questions',ar:'الأسئلة الشائعة'},
   faq_q1:           {en:'What types of QR codes can I generate?',ar:'ما أنواع رموز QR التي يمكنني إنشاؤها؟'},
@@ -544,7 +517,7 @@ const TR_IDX = {
   faq_q3:           {en:'What file formats can I download?',ar:'ما صيغ الملفات التي يمكنني تحميلها؟'},
   faq_a3:           {en:'You can download your QR code as PNG (ideal for digital use) or SVG (ideal for print and scaling to any size without quality loss).',ar:'يمكنك تحميل رمز QR بصيغة PNG (مثالية للاستخدام الرقمي) أو SVG (مثالية للطباعة والتكبير بدون فقدان الجودة).'},
   faq_q4:           {en:'Is QR Studio really free?',ar:'هل QR Studio مجاني فعلاً؟'},
-  faq_a4:           {en:'QR Studio is free to use with a free account. Simply sign up in seconds to start generating QR codes. We also offer an optional AI Pro design pack for businesses that need print-ready promotional materials.',ar:'QR Studio مجاني بحساب مجاني. سجّل حسابك خلال ثواني وابدأ فوراً. كما نوفر حزمة تصاميم AI احترافية اختيارية للشركات.'},
+  faq_a4:           {en:'Yes, the QR code generator is completely free with no account required. We also offer an optional AI Pro design pack for businesses that need print-ready promotional materials.',ar:'نعم، منشئ رموز QR مجاني تماماً بدون حساب. كما نوفر حزمة تصاميم AI احترافية اختيارية للشركات التي تحتاج مواد ترويجية جاهزة للطباعة.'},
   faq_q5:           {en:'How do I create a Wi-Fi QR code?',ar:'كيف أنشئ رمز QR للواي فاي؟'},
   faq_a5:           {en:'Click the "Wi-Fi" tab, enter your network name (SSID), password, and encryption type, then click Generate. Scanning the QR code will automatically connect the device to your Wi-Fi network.',ar:'انقر على تبويب "واي فاي"، أدخل اسم الشبكة وكلمة المرور ونوع التشفير، ثم انقر على إنشاء. مسح الرمز سيوصل الجهاز تلقائياً بشبكة الواي فاي.'},
   footer:           {en:'QR Studio — Free QR Code Generator · No Login Required',ar:'استوديو QR — مجاني للجميع'},
@@ -704,41 +677,11 @@ function buildQRContent() {
   }
 }
 
-/* ── Login Prompt Modal ── */
-function showLoginPromptModal() {
-  document.getElementById('login-prompt-modal').style.display = 'flex';
-}
-function closeLoginPromptModal() {
-  document.getElementById('login-prompt-modal').style.display = 'none';
-}
-
-/* ── Payment Modal ── */
-function showPaymentModal(qrValue) {
-  // Only show once per session
-  if (sessionStorage.getItem('paymentShown')) return;
-  sessionStorage.setItem('paymentShown', '1');
-  const modal = document.getElementById('payment-modal');
-  if (modal) modal.style.display = 'flex';
-}
-function closePaymentModal() {
-  const modal = document.getElementById('payment-modal');
-  if (modal) modal.style.display = 'none';
-}
-function selectPlan(price) {
-  closePaymentModal();
-  window.location.href = `/promo.html?plan=${price}`;
-}
-
 /* ── Generate ── */
 genBtn.addEventListener('click', generateQR);
 document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') generateQR(); });
 
 function generateQR() {
-  // Require login before generating
-  if (window.QRAuth && !QRAuth.isLoggedIn()) {
-    showLoginPromptModal();
-    return;
-  }
   const value = buildQRContent();
   if (!value) { errMsg.style.display = 'block'; return; }
   errMsg.style.display = 'none';
@@ -763,8 +706,6 @@ function generateQR() {
       promoBanner.href = `/promo.html?qr=${encodeURIComponent(value)}`;
       promoBanner.style.display = 'block';
       QRStudio.saveLastQR(value);
-      // Show payment prompt after QR is generated
-      setTimeout(() => showPaymentModal(value), 1500);
     } catch(e) { QRStudio.showToast(QRStudio.t('toast_err', TR_IDX)); }
     finally { setLoading(false); }
   }, 300);
@@ -845,61 +786,5 @@ function toggleFaq(id) {
   item.classList.toggle('open');
 }
 </script>
-
-<!-- Login Prompt Modal -->
-<div class="modal-overlay" id="login-prompt-modal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeLoginPromptModal()">×</button>
-    <div class="modal-icon">🔒</div>
-    <h2 class="modal-title">Sign in Required</h2>
-    <p class="modal-sub">Please create a free account or sign in to generate QR codes. It takes less than 30 seconds!</p>
-    <button class="modal-btn-primary" onclick="window.location.href='/auth.html?return=/index.html'">Sign In / Create Account</button>
-    <button class="modal-btn-secondary" onclick="closeLoginPromptModal()">Cancel</button>
-  </div>
-</div>
-
-<!-- Payment Modal -->
-<div class="modal-overlay" id="payment-modal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closePaymentModal()">×</button>
-    <div class="modal-icon">🎉</div>
-    <h2 class="modal-title">Love your QR Code?</h2>
-    <p class="modal-sub">Support us to keep QR Studio free for everyone, or upgrade to AI Pro for print-ready designs!</p>
-    <div class="plans-grid">
-      <div class="plan-card" onclick="selectPlan(10)">
-        <div class="plan-price">$10</div>
-        <div class="plan-label">Starter</div>
-        <ul class="plan-features">
-          <li>1 AI Design</li>
-          <li>PNG + PDF</li>
-          <li>Email Support</li>
-        </ul>
-      </div>
-      <div class="plan-card popular" onclick="selectPlan(15)">
-        <div class="plan-badge">POPULAR</div>
-        <div class="plan-price">$15</div>
-        <div class="plan-label">Pro</div>
-        <ul class="plan-features">
-          <li>3 AI Designs</li>
-          <li>All Formats</li>
-          <li>Priority Support</li>
-        </ul>
-      </div>
-      <div class="plan-card" onclick="selectPlan(20)">
-        <div class="plan-price">$20</div>
-        <div class="plan-label">Business</div>
-        <ul class="plan-features">
-          <li>5 AI Designs</li>
-          <li>Commercial Use</li>
-          <li>24/7 Support</li>
-        </ul>
-      </div>
-    </div>
-    <div class="free-continue">
-      <button onclick="closePaymentModal()">Continue for free</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>

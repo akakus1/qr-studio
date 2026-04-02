@@ -6,7 +6,7 @@
  */
 'use strict';
 
-const { supabaseAdmin }              = require('../../lib/supabase');
+const { createClient }                 = require('@supabase/supabase-js');
 const { setCors, parseBody, sanitise } = require('../../lib/auth');
 
 module.exports = async function handler(req, res) {
@@ -24,24 +24,40 @@ module.exports = async function handler(req, res) {
   if (!password || password.length < 8)
     return res.status(400).json({ error: 'Password must be at least 8 characters.' });
 
-  const { data, error } = await supabaseAdmin.auth.admin.createUser({
+  // Use anon client with signUp so Supabase sends the confirmation email automatically
+  const origin   = process.env.ALLOWED_ORIGIN || 'https://www.getqrdesign.com';
+  const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_ANON_KEY,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  );
+
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    email_confirm: false,                        // Supabase sends a confirmation email
-    user_metadata: { full_name: fullName || null },
+    options: {
+      data:            { full_name: fullName || null },
+      emailRedirectTo: `${origin}/auth.html?mode=confirmed`,
+    },
   });
 
   if (error) {
     if (error.message?.toLowerCase().includes('already registered') ||
-        error.message?.toLowerCase().includes('already exists'))
+        error.message?.toLowerCase().includes('already exists') ||
+        error.message?.toLowerCase().includes('user already registered'))
       return res.status(409).json({ error: 'An account with this email already exists.' });
     console.error('[register]', error.message);
     return res.status(400).json({ error: error.message });
   }
 
+  // If identities array is empty, the user already exists (Supabase quirk)
+  if (data.user && data.user.identities && data.user.identities.length === 0) {
+    return res.status(409).json({ error: 'An account with this email already exists.' });
+  }
+
   return res.status(201).json({
     ok:      true,
-    message: 'Account created. Check your email to confirm before signing in.',
-    userId:  data.user.id,
+    message: 'Account created! Please check your email and click the confirmation link before signing in.',
+    userId:  data.user?.id,
   });
 };
