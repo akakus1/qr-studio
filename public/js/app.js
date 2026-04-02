@@ -5,7 +5,15 @@
 'use strict';
 
 /* ── Translation engine ─────────────────────────────────────── */
-let _lang = localStorage.getItem('qr_lang') || 'en';
+const RTL_LANGS = ['ar'];
+const SUPPORTED_LANGS = ['en', 'ar', 'fr', 'es', 'de', 'tr', 'zh'];
+
+let _lang = (function() {
+  const saved = localStorage.getItem('qrs_lang') || localStorage.getItem('qr_lang');
+  if (saved && SUPPORTED_LANGS.includes(saved)) return saved;
+  const browser = (navigator.language || 'en').slice(0, 2).toLowerCase();
+  return SUPPORTED_LANGS.includes(browser) ? browser : 'en';
+})();
 
 function t(key, table) {
   const entry = table[key];
@@ -15,14 +23,11 @@ function t(key, table) {
 
 function setLang(newLang, table, wrapperId = 'main-wrapper') {
   _lang = newLang;
-  localStorage.setItem('qr_lang', _lang);
+  localStorage.setItem('qrs_lang', _lang);
 
   const html = document.documentElement;
   html.setAttribute('lang', _lang);
-  html.setAttribute('dir',  _lang === 'ar' ? 'rtl' : 'ltr');
-
-  document.getElementById('btn-en')?.classList.toggle('active', _lang === 'en');
-  document.getElementById('btn-ar')?.classList.toggle('active', _lang === 'ar');
+  html.setAttribute('dir', RTL_LANGS.includes(_lang) ? 'rtl' : 'ltr');
 
   document.querySelectorAll('[data-i18n]').forEach(el => {
     el.textContent = t(el.dataset.i18n, table);

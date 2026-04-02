@@ -6,6 +6,7 @@
 <title>Dashboard — QR Studio</title>
 <script src="/js/config.js"></script>
 <script src="/js/auth.js"></script>
+<script src="/js/app.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -126,7 +127,21 @@
     <div class="nav-logo-icon">⚡</div>
     <span class="nav-logo-text">QR Studio</span>
   </a>
-  <div id="nav-auth"></div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="lang-dropdown" style="position:relative;">
+      <button class="lang-btn" id="lang-current-dash" style="padding:5px 14px;font-size:.72rem;">EN &#9662;</button>
+      <div class="lang-menu" id="lang-menu-dash">
+        <button class="lang-opt active" data-lang="en">🇬🇧 English</button>
+        <button class="lang-opt" data-lang="ar">🇸🇦 العربية</button>
+        <button class="lang-opt" data-lang="fr">🇫🇷 Français</button>
+        <button class="lang-opt" data-lang="es">🇪🇸 Español</button>
+        <button class="lang-opt" data-lang="de">🇩🇪 Deutsch</button>
+        <button class="lang-opt" data-lang="tr">🇹🇷 Türkçe</button>
+        <button class="lang-opt" data-lang="zh">🇨🇳 中文</button>
+      </div>
+    </div>
+    <div id="nav-auth"></div>
+  </div>
 </nav>
 
 <div class="layout">
@@ -237,7 +252,6 @@
   </main>
 </div>
 
-<script src="/js/app.js"></script>
 <script src="/js/promo.js"></script>
 <script src="/js/dashboard.js"></script>
 <script>
@@ -403,6 +417,33 @@ async function loadAnalytics() {
 window.addEventListener('DOMContentLoaded', () => {
   setTimeout(loadAnalytics, 800);
 });
+
+/* ── Dashboard language dropdown ── */
+(function() {
+  const LANG_LABELS = {en:'\ud83c\uddec\ud83c\udde7 EN',ar:'\ud83c\uddf8\ud83c\udde6 AR',fr:'\ud83c\uddeb\ud83c\uddf7 FR',es:'\ud83c\uddea\ud83c\uddf8 ES',de:'\ud83c\udde9\ud83c\uddea DE',tr:'\ud83c\uddf9\ud83c\uddf7 TR',zh:'\ud83c\udde8\ud83c\uddf3 \u4e2d\u6587'};
+  const btn  = document.getElementById('lang-current-dash');
+  const menu = document.getElementById('lang-menu-dash');
+  const opts = document.querySelectorAll('.lang-opt');
+  if (!btn || !menu) return;
+
+  function applyLang(lang) {
+    const html = document.documentElement;
+    html.setAttribute('lang', lang);
+    html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    btn.innerHTML = (LANG_LABELS[lang] || lang.toUpperCase()) + ' &#9662;';
+    opts.forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
+    localStorage.setItem('qrs_lang', lang);
+    menu.classList.remove('open');
+  }
+
+  btn.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.toggle('open'); });
+  opts.forEach(o => o.addEventListener('click', () => applyLang(o.dataset.lang)));
+  document.addEventListener('click', () => menu.classList.remove('open'));
+
+  const saved = localStorage.getItem('qrs_lang') || navigator.language.slice(0,2) || 'en';
+  const supported = ['en','ar','fr','es','de','tr','zh'];
+  applyLang(supported.includes(saved) ? saved : 'en');
+})();
 </script>
 </body>
 </html>

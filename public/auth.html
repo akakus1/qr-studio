@@ -7,6 +7,7 @@
 <!-- Supabase config — edit public/js/config.js before deploying -->
 <script src="/js/config.js"></script>
 <script src="/js/auth.js"></script>
+<script src="/js/app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -44,13 +45,30 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 .btn-link:hover{text-decoration:underline;}
 .foot{text-align:center;margin-top:24px;font-size:.8rem;color:var(--tmuted);}
 .foot a{color:var(--purpleL);text-decoration:none;}
+@keyframes langFade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
 <div class="bg-mesh" aria-hidden="true"></div>
 <div class="bg-grid"  aria-hidden="true"></div>
 
-<div class="wrap">
+<!-- Language Dropdown -->
+<nav class="lang-bar">
+  <div class="lang-dropdown">
+    <button class="lang-btn" id="lang-current-auth">EN ▾</button>
+    <div class="lang-menu" id="lang-menu-auth">
+      <button class="lang-opt active" data-lang="en">🇬🇧 English</button>
+      <button class="lang-opt" data-lang="ar">🇸🇦 العربية</button>
+      <button class="lang-opt" data-lang="fr">🇫🇷 Français</button>
+      <button class="lang-opt" data-lang="es">🇪🇸 Español</button>
+      <button class="lang-opt" data-lang="de">🇩🇪 Deutsch</button>
+      <button class="lang-opt" data-lang="tr">🇹🇷 Türkçe</button>
+      <button class="lang-opt" data-lang="zh">🇨🇳 中文</button>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="auth-wrapper">
   <a href="/index.html" class="logo">
     <div class="logo-icon">⚡</div>
     <span class="logo-text">QR Studio</span>
@@ -58,59 +76,104 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 
   <div class="card">
     <div class="tabs" id="auth-tabs">
-      <button class="tab active" data-form="login">Sign In</button>
-      <button class="tab"        data-form="register">Create Account</button>
+      <button class="tab active" data-form="login" data-i18n="auth_signin">Sign In</button>
+      <button class="tab"        data-form="register" data-i18n="auth_create">Create Account</button>
     </div>
 
     <!-- Sign In -->
     <div class="form active" id="form-login">
-      <h1 class="form-title">Welcome back</h1>
-      <p class="form-sub">Sign in to access your designs and downloads.</p>
+      <h1 class="form-title" data-i18n="auth_welcome">Welcome back</h1>
+      <p class="form-sub" data-i18n="auth_welcome_sub">Sign in to access your designs and downloads.</p>
       <div class="err" id="login-err"></div>
       <div class="ok"  id="login-ok"></div>
-      <div class="ff"><label>Email</label><input type="email" id="login-email" placeholder="you@example.com" autocomplete="email"/></div>
-      <div class="ff"><label>Password</label><input type="password" id="login-pass" placeholder="Your password" autocomplete="current-password"/></div>
-      <button class="btn-link" id="btn-forgot">Forgot password?</button>
+      <div class="ff"><label data-i18n="auth_email">Email</label><input type="email" id="login-email" placeholder="you@example.com" autocomplete="email"/></div>
+      <div class="ff"><label data-i18n="auth_password">Password</label><input type="password" id="login-pass" placeholder="Your password" autocomplete="current-password"/></div>
+      <button class="btn-link" id="btn-forgot" data-i18n="auth_forgot">Forgot password?</button>
       <button class="btn-primary" id="btn-login">
-        <span id="btn-login-label">Sign In</span>
+        <span id="btn-login-label" data-i18n="auth_signin">Sign In</span>
         <div class="spinner" id="btn-login-spin"></div>
       </button>
     </div>
 
     <!-- Sign Up -->
     <div class="form" id="form-register">
-      <h1 class="form-title">Create account</h1>
-      <p class="form-sub">Join QR Studio to save designs and re-download any time.</p>
+      <h1 class="form-title" data-i18n="auth_create_title">Create account</h1>
+      <p class="form-sub" data-i18n="auth_create_sub">Join QR Studio to save designs and re-download any time.</p>
       <div class="err" id="reg-err"></div>
       <div class="ok"  id="reg-ok"></div>
-      <div class="ff"><label>Full Name</label><input type="text" id="reg-name" placeholder="Alex Johnson" autocomplete="name"/></div>
-      <div class="ff"><label>Email</label><input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email"/></div>
-      <div class="ff"><label>Password</label><input type="password" id="reg-pass" placeholder="At least 8 characters" autocomplete="new-password"/></div>
+      <div class="ff"><label data-i18n="auth_fullname">Full Name</label><input type="text" id="reg-name" placeholder="Alex Johnson" autocomplete="name"/></div>
+      <div class="ff"><label data-i18n="auth_email">Email</label><input type="email" id="reg-email" placeholder="you@example.com" autocomplete="email"/></div>
+      <div class="ff"><label data-i18n="auth_password">Password</label><input type="password" id="reg-pass" placeholder="At least 8 characters" autocomplete="new-password"/></div>
       <button class="btn-primary" id="btn-register">
-        <span id="btn-register-label">Create Account</span>
+        <span id="btn-register-label" data-i18n="auth_create">Create Account</span>
         <div class="spinner" id="btn-register-spin"></div>
       </button>
     </div>
 
     <!-- Reset -->
     <div class="form" id="form-reset">
-      <h1 class="form-title">Reset password</h1>
-      <p class="form-sub">Enter your email and we'll send a reset link.</p>
+      <h1 class="form-title" data-i18n="auth_reset_title">Reset password</h1>
+      <p class="form-sub" data-i18n="auth_reset_sub">Enter your email and we'll send a reset link.</p>
       <div class="err" id="reset-err"></div>
       <div class="ok"  id="reset-ok"></div>
-      <div class="ff"><label>Email</label><input type="email" id="reset-email" placeholder="you@example.com"/></div>
+      <div class="ff"><label data-i18n="auth_email">Email</label><input type="email" id="reset-email" placeholder="you@example.com"/></div>
       <button class="btn-primary" id="btn-reset">
-        <span id="btn-reset-label">Send Reset Link</span>
+        <span id="btn-reset-label" data-i18n="auth_send_reset">Send Reset Link</span>
         <div class="spinner" id="btn-reset-spin"></div>
       </button>
-      <button class="btn-link" style="margin-top:14px;text-align:center;" onclick="showForm('login')">← Back to Sign In</button>
+      <button class="btn-link" style="margin-top:14px;text-align:center;" onclick="showForm('login')" data-i18n="auth_back_signin">← Back to Sign In</button>
     </div>
   </div>
 
-  <div class="foot">By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a></div>
+  <div class="foot" data-i18n="auth_footer">By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a></div>
 </div>
 
 <script>
+/* ── Auth page translations ── */
+const TR_AUTH = {
+  page_title:       {en:'Sign In — QR Studio',ar:'تسجيل الدخول — QR Studio',fr:'Connexion — QR Studio',es:'Iniciar sesión — QR Studio',de:'Anmelden — QR Studio',tr:'Giriş Yap — QR Studio',zh:'登录 — QR Studio'},
+  auth_signin:      {en:'Sign In',ar:'تسجيل الدخول',fr:'Se connecter',es:'Iniciar sesión',de:'Anmelden',tr:'Giriş Yap',zh:'登录'},
+  auth_create:      {en:'Create Account',ar:'إنشاء حساب',fr:'Créer un compte',es:'Crear cuenta',de:'Konto erstellen',tr:'Hesap Oluştur',zh:'创建账户'},
+  auth_welcome:     {en:'Welcome back',ar:'مرحباً بعودتك',fr:'Bon retour',es:'Bienvenido de nuevo',de:'Willkommen zurück',tr:'Tekrar hoş geldiniz',zh:'欢迎回来'},
+  auth_welcome_sub: {en:'Sign in to access your designs and downloads.',ar:'سجّل دخولك للوصول إلى تصاميمك وتحميلاتك.',fr:'Connectez-vous pour accéder à vos designs et téléchargements.',es:'Inicie sesión para acceder a sus diseños y descargas.',de:'Melden Sie sich an, um auf Ihre Designs und Downloads zuzugreifen.',tr:'Tasarımlarınıza ve indirmelerinize erişmek için giriş yapın.',zh:'登录以访问您的设计和下载内容。'},
+  auth_email:       {en:'Email',ar:'البريد الإلكتروني',fr:'E-mail',es:'Correo',de:'E-Mail',tr:'E-posta',zh:'邮箱'},
+  auth_password:    {en:'Password',ar:'كلمة المرور',fr:'Mot de passe',es:'Contraseña',de:'Passwort',tr:'Şifre',zh:'密码'},
+  auth_forgot:      {en:'Forgot password?',ar:'نسيت كلمة المرور؟',fr:'Mot de passe oublié ?',es:'¿Olvidó su contraseña?',de:'Passwort vergessen?',tr:'Şifremi unuttum?',zh:'忘记密码？'},
+  auth_create_title:{en:'Create account',ar:'إنشاء حساب',fr:'Créer un compte',es:'Crear cuenta',de:'Konto erstellen',tr:'Hesap Oluştur',zh:'创建账户'},
+  auth_create_sub:  {en:'Join QR Studio to save designs and re-download any time.',ar:'انضم إلى QR Studio لحفظ تصاميمك وتحميلها في أي وقت.',fr:'Rejoignez QR Studio pour sauvegarder vos designs et les re-télécharger.',es:'Únase a QR Studio para guardar diseños y volver a descargarlos.',de:'Treten Sie QR Studio bei, um Designs zu speichern und jederzeit herunterzuladen.',tr:'Tasarımlarınızı kaydetmek ve istediğiniz zaman indirmek için QR Studio\'ya katılın.',zh:'加入 QR Studio，保存您的设计并随时重新下载。'},
+  auth_fullname:    {en:'Full Name',ar:'الاسم الكامل',fr:'Nom complet',es:'Nombre completo',de:'Vollständiger Name',tr:'Tam Ad',zh:'全名'},
+  auth_reset_title: {en:'Reset password',ar:'إعادة تعيين كلمة المرور',fr:'Réinitialiser le mot de passe',es:'Restablecer contraseña',de:'Passwort zurücksetzen',tr:'Şifreyi Sıfırla',zh:'重置密码'},
+  auth_reset_sub:   {en:"Enter your email and we'll send a reset link.",ar:'أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة التعيين.',fr:'Entrez votre e-mail et nous vous enverrons un lien de réinitialisation.',es:'Ingrese su correo y le enviaremos un enlace de restablecimiento.',de:'Geben Sie Ihre E-Mail ein und wir senden Ihnen einen Reset-Link.',tr:'E-postanızı girin, size bir sıfırlama bağlantısı gönderelim.',zh:'输入您的邮箱，我们将发送重置链接。'},
+  auth_send_reset:  {en:'Send Reset Link',ar:'إرسال رابط الإعادة',fr:'Envoyer le lien',es:'Enviar enlace',de:'Link senden',tr:'Bağlantı Gönder',zh:'发送重置链接'},
+  auth_back_signin: {en:'← Back to Sign In',ar:'← العودة لتسجيل الدخول',fr:'← Retour à la connexion',es:'← Volver a iniciar sesión',de:'← Zurück zur Anmeldung',tr:'← Girişe Dön',zh:'← 返回登录'},
+  auth_footer:      {en:'By continuing you agree to our Terms and Privacy Policy',ar:'بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية',fr:'En continuant, vous acceptez nos Conditions et Politique de confidentialité',es:'Al continuar, acepta nuestros Términos y Política de privacidad',de:'Durch Fortfahren stimmen Sie unseren Nutzungsbedingungen und Datenschutzrichtlinien zu.',tr:'Devam ederek Şartlarımızı ve Gizlilik Politikamızı kabul etmiş olursunuz.',zh:'继续即表示您同意我们的条款和隐私政策。'},
+};
+
+/* ── Language dropdown ── */
+(function() {
+  const LANG_LABELS = {en:'🇬🇧 EN',ar:'🇸🇦 AR',fr:'🇫🇷 FR',es:'🇪🇸 ES',de:'🇩🇪 DE',tr:'🇹🇷 TR',zh:'🇨🇳 中文'};
+  const btn  = document.getElementById('lang-current-auth');
+  const menu = document.getElementById('lang-menu-auth');
+  const opts = document.querySelectorAll('.lang-opt');
+
+  function applyLang(lang) {
+    QRStudio.setLang(lang, TR_AUTH, 'auth-wrapper');
+    btn.textContent = (LANG_LABELS[lang] || lang.toUpperCase()) + ' ▾';
+    opts.forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
+    localStorage.setItem('qrs_lang', lang);
+    menu.classList.remove('open');
+  }
+
+  btn.addEventListener('click', (e) => { e.stopPropagation(); menu.classList.toggle('open'); });
+  opts.forEach(o => o.addEventListener('click', () => applyLang(o.dataset.lang)));
+  document.addEventListener('click', () => menu.classList.remove('open'));
+
+  const saved = localStorage.getItem('qrs_lang') || navigator.language.slice(0,2) || 'en';
+  const supported = ['en','ar','fr','es','de','tr','zh'];
+  applyLang(supported.includes(saved) ? saved : 'en');
+})();
+
+/* ── Auth logic ── */
 const params   = new URLSearchParams(window.location.search);
 const returnTo = params.get('return') || '/dashboard.html';
 const initMode = params.get('mode');

@@ -236,8 +236,18 @@ footer{text-align:center;padding:32px 24px;color:var(--tdim);font-size:.78rem;bo
 <div id="nav-auth"></div>
 
 <nav class="lang-bar">
-  <button class="lang-btn active" id="btn-en">EN</button>
-  <button class="lang-btn"        id="btn-ar">AR</button>
+  <div class="lang-dropdown" id="lang-dropdown">
+    <button class="lang-btn active" id="lang-current">EN ▾</button>
+    <div class="lang-menu" id="lang-menu">
+      <button class="lang-opt active" data-lang="en">🇬🇧 English</button>
+      <button class="lang-opt" data-lang="ar">🇸🇦 العربية</button>
+      <button class="lang-opt" data-lang="fr">🇫🇷 Français</button>
+      <button class="lang-opt" data-lang="es">🇪🇸 Español</button>
+      <button class="lang-opt" data-lang="de">🇩🇪 Deutsch</button>
+      <button class="lang-opt" data-lang="tr">🇹🇷 Türkçe</button>
+      <button class="lang-opt" data-lang="zh">🇨🇳 中文</button>
+    </div>
+  </div>
 </nav>
 
 <div class="page" id="main-wrapper">
@@ -533,81 +543,108 @@ footer{text-align:center;padding:32px 24px;color:var(--tdim);font-size:.78rem;bo
 <script>
 /* ── Translations ── */
 const TR_IDX = {
-  page_title:       {en:'QR Studio — Free QR Code Generator',ar:'استوديو QR — منشئ رموز QR مجاني'},
-  badge:            {en:'QR Studio — Free Generator',ar:'استوديو QR — منشئ مجاني'},
-  h1_line1:         {en:'Generate QR Codes',ar:'أنشئ رموز QR'},
-  h1_line2:         {en:'Instantly. Free.',ar:'فوراً. مجاناً.'},
-  subtitle:         {en:'Enter any URL, Wi-Fi, vCard, email or phone — get a download-ready QR code in seconds.',ar:'أدخل رابطاً أو واي فاي أو بطاقة اتصال أو بريداً أو هاتفاً — واحصل على رمز QR جاهز للتحميل في ثوانٍ.'},
-  stat_free:        {en:'100% Free',ar:'مجاني 100٪'},
-  stat_no_login:    {en:'Free Account Required',ar:'لا يلزم تسجيل دخول'},
-  stat_instant:     {en:'Instant Download',ar:'تحميل فوري'},
-  card_title:       {en:'QR Code Generator',ar:'منشئ رمز QR'},
-  tab_url:          {en:'URL',ar:'رابط'},
-  tab_text:         {en:'Text',ar:'نص'},
-  tab_wifi:         {en:'Wi-Fi',ar:'واي فاي'},
-  tab_vcard:        {en:'vCard',ar:'بطاقة'},
-  tab_email:        {en:'Email',ar:'بريد'},
-  tab_phone:        {en:'Phone',ar:'هاتف'},
-  input_label_url:  {en:'Website URL',ar:'رابط الموقع'},
-  input_label_text: {en:'Text / Message',ar:'النص / الرسالة'},
-  wifi_ssid:        {en:'Network Name (SSID)',ar:'اسم الشبكة (SSID)'},
-  wifi_pass:        {en:'Password',ar:'كلمة المرور'},
-  wifi_enc:         {en:'Encryption',ar:'نوع التشفير'},
-  wifi_hidden:      {en:'Hidden Network',ar:'شبكة مخفية'},
-  vcard_fname:      {en:'First Name',ar:'الاسم الأول'},
-  vcard_lname:      {en:'Last Name',ar:'اسم العائلة'},
-  vcard_phone:      {en:'Phone',ar:'الهاتف'},
-  vcard_email:      {en:'Email',ar:'البريد الإلكتروني'},
-  vcard_org:        {en:'Company',ar:'الشركة'},
-  vcard_title:      {en:'Job Title',ar:'المسمى الوظيفي'},
-  vcard_website:    {en:'Website (optional)',ar:'الموقع الإلكتروني (اختياري)'},
-  email_to:         {en:'To (Email Address)',ar:'إلى (البريد الإلكتروني)'},
-  email_subject:    {en:'Subject (optional)',ar:'الموضوع (اختياري)'},
-  email_body:       {en:'Body (optional)',ar:'نص الرسالة (اختياري)'},
-  phone_number:     {en:'Phone Number',ar:'رقم الهاتف'},
-  error_empty:      {en:'Please enter something to generate a QR code.',ar:'الرجاء إدخال بيانات لإنشاء رمز QR.'},
-  size_label:       {en:'QR Code Size',ar:'حجم رمز QR'},
-  size_small:       {en:'Small',ar:'صغير'},
-  size_medium:      {en:'Medium',ar:'متوسط'},
-  size_large:       {en:'Large',ar:'كبير'},
-  customize_label:  {en:'🎨 Customize Colors & Logo',ar:'🎨 تخصيص الألوان والشعار'},
-  color_dark:       {en:'QR Color',ar:'لون الرمز'},
-  color_light:      {en:'Background Color',ar:'لون الخلفية'},
-  logo_label:       {en:'Logo / Icon (optional)',ar:'الشعار / الأيقونة (اختياري)'},
-  logo_hint:        {en:'Click to upload logo (PNG, JPG, SVG)',ar:'انقر لرفع الشعار (PNG, JPG, SVG)'},
-  logo_remove:      {en:'Remove',ar:'حذف'},
-  btn_generate:     {en:'Generate QR Code',ar:'إنشاء رمز QR'},
-  btn_download_png: {en:'Download PNG',ar:'تحميل PNG'},
-  btn_download_svg: {en:'Download SVG',ar:'تحميل SVG'},
-  output_label:     {en:'Your QR Code',ar:'رمز QR الخاص بك'},
-  promo_badge:      {en:'AI Pro · From $10',ar:'AI احترافي · من $10'},
-  promo_title:      {en:'Get Your QR Promo Design Pack',ar:'احصل على حزمة تصاميم QR الترويجية'},
-  promo_desc:       {en:'AI-generated print-ready business designs in seconds.',ar:'تصاميم ترويجية جاهزة للطباعة بالذكاء الاصطناعي.'},
-  feat_1:           {en:'High error correction',ar:'تصحيح خطأ عالٍ'},
-  feat_2:           {en:'URL, Wi-Fi, vCard, email, phone',ar:'روابط وواي فاي وبطاقة وبريد وهاتف'},
-  feat_3:           {en:'PNG & SVG download · Free account',ar:'تحميل PNG و SVG · حساب مجاني'},
-  feat_4:           {en:'Custom colors & logo',ar:'ألوان وشعار مخصص'},
-  faq_title:        {en:'Frequently Asked Questions',ar:'الأسئلة الشائعة'},
-  faq_q1:           {en:'What types of QR codes can I generate?',ar:'ما أنواع رموز QR التي يمكنني إنشاؤها؟'},
-  faq_a1:           {en:'You can generate QR codes for URLs, plain text, Wi-Fi networks, vCard contacts, email addresses, and phone numbers — all for free with no account required.',ar:'يمكنك إنشاء رموز QR للروابط، والنصوص، وشبكات الواي فاي، وبطاقات الاتصال (vCard)، والبريد الإلكتروني، وأرقام الهاتف — كل ذلك مجاناً بدون حساب.'},
-  faq_q2:           {en:'Can I customize the colors and add a logo?',ar:'هل يمكنني تخصيص الألوان وإضافة شعار؟'},
-  faq_a2:           {en:'Yes! Click "Customize Colors & Logo" to change the QR code color, background color, and add your own logo or icon in the center of the QR code.',ar:'نعم! انقر على "تخصيص الألوان والشعار" لتغيير لون الرمز ولون الخلفية وإضافة شعارك أو أيقونتك في منتصف رمز QR.'},
-  faq_q3:           {en:'What file formats can I download?',ar:'ما صيغ الملفات التي يمكنني تحميلها؟'},
-  faq_a3:           {en:'You can download your QR code as PNG (ideal for digital use) or SVG (ideal for print and scaling to any size without quality loss).',ar:'يمكنك تحميل رمز QR بصيغة PNG (مثالية للاستخدام الرقمي) أو SVG (مثالية للطباعة والتكبير بدون فقدان الجودة).'},
-  faq_q4:           {en:'Is QR Studio really free?',ar:'هل QR Studio مجاني فعلاً؟'},
-  faq_a4:           {en:'QR Studio is free to use with a free account. Simply sign up in seconds to start generating QR codes. We also offer an optional AI Pro design pack for businesses that need print-ready promotional materials.',ar:'QR Studio مجاني بحساب مجاني. سجّل حسابك خلال ثواني وابدأ فوراً. كما نوفر حزمة تصاميم AI احترافية اختيارية للشركات.'},
-  faq_q5:           {en:'How do I create a Wi-Fi QR code?',ar:'كيف أنشئ رمز QR للواي فاي؟'},
-  faq_a5:           {en:'Click the "Wi-Fi" tab, enter your network name (SSID), password, and encryption type, then click Generate. Scanning the QR code will automatically connect the device to your Wi-Fi network.',ar:'انقر على تبويب "واي فاي"، أدخل اسم الشبكة وكلمة المرور ونوع التشفير، ثم انقر على إنشاء. مسح الرمز سيوصل الجهاز تلقائياً بشبكة الواي فاي.'},
-  footer:           {en:'QR Studio — Free QR Code Generator · No Login Required',ar:'استوديو QR — مجاني للجميع'},
-  toast_copied:     {en:'✓ Copied!',ar:'✓ تم النسخ!'},
-  toast_dl:         {en:'✓ QR Code downloaded!',ar:'✓ تم تحميل رمز QR!'},
-  toast_err:        {en:'⚠ Could not generate QR. Try again.',ar:'⚠ تعذّر الإنشاء. حاول مجدداً.'},
-};
+  page_title:       {en:'QR Studio — Free QR Code Generator',ar:'استوديو QR — منشئ رموز QR مجاني',fr:'QR Studio — Générateur de QR code gratuit',es:'QR Studio — Generador de código QR gratuito',de:'QR Studio — Kostenloser QR-Code-Generator',tr:'QR Studio — Ücretsiz QR Kod Oluşturucu',zh:'QR Studio — 免费二维码生成器'},
+  badge:            {en:'QR Studio — Free Generator',ar:'استوديو QR — منشئ مجاني',fr:'QR Studio — Générateur gratuit',es:'QR Studio — Generador gratuito',de:'QR Studio — Kostenloser Generator',tr:'QR Studio — Ücretsiz Oluşturucu',zh:'QR Studio — 免费生成器'},
+  h1_line1:         {en:'Generate QR Codes',ar:'أنشئ رموز QR',fr:'Générez des QR codes',es:'Genera códigos QR',de:'QR-Codes erstellen',tr:'QR Kodları Oluşturun',zh:'生成二维码'},
+  h1_line2:         {en:'Instantly. Free.',ar:'فوراً. مجاناً.',fr:'Instantanément. Gratuit.',es:'Al instante. Gratis.',de:'Sofort. Kostenlos.',tr:'Anında. Ücretsiz.',zh:'即时生成。完全免费。'},
+  subtitle:         {en:'Enter any URL, Wi-Fi, vCard, email or phone — get a download-ready QR code in seconds.',ar:'أدخل رابطاً أو واي فاي أو بطاقة اتصال أو بريداً أو هاتفاً — واحصل على رمز QR جاهز للتحميل في ثوانٍ.',fr:'Entrez une URL, Wi-Fi, vCard, e-mail ou téléphone — obtenez un QR code prêt à télécharger en secondes.',es:'Ingrese una URL, Wi-Fi, vCard, correo o teléfono — obtenga un código QR listo para descargar en segundos.',de:'Geben Sie eine URL, WLAN, vCard, E-Mail oder Telefon ein — erhalten Sie in Sekunden einen QR-Code zum Herunterladen.',tr:'Herhangi bir URL, Wi-Fi, vCard, e-posta veya telefon girin — saniyeler içinde indirmeye hazır bir QR kodu alın.',zh:'输入任意链接、无线网络、名片、邮件或电话——几秒钟内获得可下载的二维码。'},
+  stat_free:        {en:'100% Free',ar:'مجاني 100٪',fr:'100% Gratuit',es:'100% Gratis',de:'100% Kostenlos',tr:'%100 Ücretsiz',zh:'100% 免费'},
+  stat_no_login:    {en:'Free Account Required',ar:'لا يلزم تسجيل دخول',fr:'Compte gratuit requis',es:'Cuenta gratuita requerida',de:'Kostenloses Konto erforderlich',tr:'Ücretsiz Hesap Gerekli',zh:'需要免费账户'},
+  stat_instant:     {en:'Instant Download',ar:'تحميل فوري',fr:'Téléchargement instantané',es:'Descarga instantánea',de:'Sofortiger Download',tr:'Anında İndirme',zh:'即时下载'},
+  card_title:       {en:'QR Code Generator',ar:'منشئ رمز QR',fr:'Générateur de QR code',es:'Generador de código QR',de:'QR-Code-Generator',tr:'QR Kod Oluşturucu',zh:'二维码生成器'},
+  tab_url:          {en:'URL',ar:'رابط',fr:'URL',es:'URL',de:'URL',tr:'URL',zh:'链接'},
+  tab_text:         {en:'Text',ar:'نص',fr:'Texte',es:'Texto',de:'Text',tr:'Metin',zh:'文本'},
+  tab_wifi:         {en:'Wi-Fi',ar:'واي فاي',fr:'Wi-Fi',es:'Wi-Fi',de:'WLAN',tr:'Wi-Fi',zh:'无线网络'},
+  tab_vcard:        {en:'vCard',ar:'بطاقة',fr:'vCard',es:'vCard',de:'vCard',tr:'vCard',zh:'名片'},
+  tab_email:        {en:'Email',ar:'بريد',fr:'E-mail',es:'Correo',de:'E-Mail',tr:'E-posta',zh:'邮件'},
+  tab_phone:        {en:'Phone',ar:'هاتف',fr:'Téléphone',es:'Teléfono',de:'Telefon',tr:'Telefon',zh:'电话'},
+  input_label_url:  {en:'Website URL',ar:'رابط الموقع',fr:'URL du site',es:'URL del sitio',de:'Website-URL',tr:'Web sitesi URL',zh:'网站链接'},
+  input_label_text: {en:'Text / Message',ar:'النص / الرسالة',fr:'Texte / Message',es:'Texto / Mensaje',de:'Text / Nachricht',tr:'Metin / Mesaj',zh:'文本 / 消息'},
+  wifi_ssid:        {en:'Network Name (SSID)',ar:'اسم الشبكة (SSID)',fr:'Nom du réseau (SSID)',es:'Nombre de red (SSID)',de:'Netzwerkname (SSID)',tr:'Ağ Adı (SSID)',zh:'网络名称 (SSID)'},
+  wifi_pass:        {en:'Password',ar:'كلمة المرور',fr:'Mot de passe',es:'Contraseña',de:'Passwort',tr:'Şifre',zh:'密码'},
+  wifi_enc:         {en:'Encryption',ar:'نوع التشفير',fr:'Chiffrement',es:'Cifrado',de:'Verschlüsselung',tr:'Şifreleme',zh:'加密方式'},
+  wifi_hidden:      {en:'Hidden Network',ar:'شبكة مخفية',fr:'Réseau masqué',es:'Red oculta',de:'Verstecktes Netzwerk',tr:'Gizli Ağ',zh:'隐藏网络'},
+  vcard_fname:      {en:'First Name',ar:'الاسم الأول',fr:'Prénom',es:'Nombre',de:'Vorname',tr:'Ad',zh:'名'},
+  vcard_lname:      {en:'Last Name',ar:'اسم العائلة',fr:'Nom de famille',es:'Apellido',de:'Nachname',tr:'Soyad',zh:'姓'},
+  vcard_phone:      {en:'Phone',ar:'الهاتف',fr:'Téléphone',es:'Teléfono',de:'Telefon',tr:'Telefon',zh:'电话'},
+  vcard_email:      {en:'Email',ar:'البريد الإلكتروني',fr:'E-mail',es:'Correo',de:'E-Mail',tr:'E-posta',zh:'邮件'},
+  vcard_org:        {en:'Company',ar:'الشركة',fr:'Entreprise',es:'Empresa',de:'Unternehmen',tr:'Şirket',zh:'公司'},
+  vcard_title:      {en:'Job Title',ar:'المسمى الوظيفي',fr:'Titre du poste',es:'Cargo',de:'Berufsbezeichnung',tr:'Unvan',zh:'职位'},
+  vcard_website:    {en:'Website (optional)',ar:'الموقع الإلكتروني (اختياري)',fr:'Site web (optionnel)',es:'Sitio web (opcional)',de:'Website (optional)',tr:'Web sitesi (isteğe bağlı)',zh:'网站（可选）'},
+  email_to:         {en:'To (Email Address)',ar:'إلى (البريد الإلكتروني)',fr:'À (adresse e-mail)',es:'Para (correo)',de:'An (E-Mail)',tr:'Kime (E-posta)',zh:'收件人（邮箱）'},
+  email_subject:    {en:'Subject (optional)',ar:'الموضوع (اختياري)',fr:'Objet (optionnel)',es:'Asunto (opcional)',de:'Betreff (optional)',tr:'Konu (isteğe bağlı)',zh:'主题（可选）'},
+  email_body:       {en:'Body (optional)',ar:'نص الرسالة (اختياري)',fr:'Corps (optionnel)',es:'Cuerpo (opcional)',de:'Inhalt (optional)',tr:'İçerik (isteğe bağlı)',zh:'正文（可选）'},
+  phone_number:     {en:'Phone Number',ar:'رقم الهاتف',fr:'Numéro de téléphone',es:'Número de teléfono',de:'Telefonnummer',tr:'Telefon numarası',zh:'电话号码'},
+  error_empty:      {en:'Please enter something to generate a QR code.',ar:'الرجاء إدخال بيانات لإنشاء رمز QR.',fr:'Veuillez saisir quelque chose pour générer un QR code.',es:'Por favor ingrese algo para generar un código QR.',de:'Bitte geben Sie etwas ein, um einen QR-Code zu erstellen.',tr:'Lütfen bir QR kodu oluşturmak için bir şey girin.',zh:'请输入内容以生成二维码。'},
+  size_label:       {en:'QR Code Size',ar:'حجم رمز QR',fr:'Taille du QR code',es:'Tamaño del código QR',de:'QR-Code-Größe',tr:'QR Kodu Boyutu',zh:'二维码尺寸'},
+  size_small:       {en:'Small',ar:'صغير',fr:'Petit',es:'Pequeño',de:'Klein',tr:'Küçük',zh:'小'},
+  size_medium:      {en:'Medium',ar:'متوسط',fr:'Moyen',es:'Mediano',de:'Mittel',tr:'Orta',zh:'中'},
+  size_large:       {en:'Large',ar:'كبير',fr:'Grand',es:'Grande',de:'Groß',tr:'Büyük',zh:'大'},
+  customize_label:  {en:'🎨 Customize Colors & Logo',ar:'🎨 تخصيص الألوان والشعار',fr:'🎨 Personnaliser couleurs & logo',es:'🎨 Personalizar colores y logo',de:'🎨 Farben & Logo anpassen',tr:'🎨 Renkleri ve logoyu özelleştir',zh:'🎨 自定义颜色和徽标'},
+  color_dark:       {en:'QR Color',ar:'لون الرمز',fr:'Couleur QR',es:'Color QR',de:'QR-Farbe',tr:'QR Rengi',zh:'二维码颜色'},
+  color_light:      {en:'Background Color',ar:'لون الخلفية',fr:'Couleur de fond',es:'Color de fondo',de:'Hintergrundfarbe',tr:'Arka plan rengi',zh:'背景颜色'},
+  logo_label:       {en:'Logo / Icon (optional)',ar:'الشعار / الأيقونة (اختياري)',fr:'Logo / Icône (optionnel)',es:'Logo / Ícono (opcional)',de:'Logo / Symbol (optional)',tr:'Logo / Simge (isteğe bağlı)',zh:'徽标 / 图标（可选）'},
+  logo_hint:        {en:'Click to upload logo (PNG, JPG, SVG)',ar:'انقر لرفع الشعار (PNG, JPG, SVG)',fr:'Cliquez pour télécharger un logo',es:'Clic para subir logo',de:'Klicken zum Logo hochladen',tr:'Logo yüklemek için tıklayın',zh:'点击上传徽标'},
+  logo_remove:      {en:'Remove',ar:'حذف',fr:'Supprimer',es:'Eliminar',de:'Entfernen',tr:'Kaldır',zh:'删除'},
+  btn_generate:     {en:'Generate QR Code',ar:'إنشاء رمز QR',fr:'Générer le QR code',es:'Generar código QR',de:'QR-Code erstellen',tr:'QR Kodu Oluştur',zh:'生成二维码'},
+  btn_download_png: {en:'Download PNG',ar:'تحميل PNG',fr:'Télécharger PNG',es:'Descargar PNG',de:'PNG herunterladen',tr:'PNG İndir',zh:'下载 PNG'},
+  btn_download_svg: {en:'Download SVG',ar:'تحميل SVG',fr:'Télécharger SVG',es:'Descargar SVG',de:'SVG herunterladen',tr:'SVG İndir',zh:'下载 SVG'},
+  output_label:     {en:'Your QR Code',ar:'رمز QR الخاص بك',fr:'Votre QR code',es:'Su código QR',de:'Ihr QR-Code',tr:'QR Kodunuz',zh:'您的二维码'},
+  promo_badge:      {en:'AI Pro · From $10',ar:'AI احترافي · من $10',fr:'AI Pro · Dès 10 $',es:'AI Pro · Desde $10',de:'AI Pro · Ab $10',tr:"AI Pro · 10 $'dan",zh:'AI Pro · 从 $10 起'},
+  promo_title:      {en:'Get Your QR Promo Design Pack',ar:'احصل على حزمة تصاميم QR الترويجية',fr:'Obtenez votre pack de design QR Pro',es:'Obtenga su paquete de diseño QR Pro',de:'Holen Sie sich Ihr QR Design-Paket',tr:'QR Tasarım Paketinizi Alın',zh:'获取您的 QR 设计包'},
+  promo_desc:       {en:'AI-generated print-ready business designs in seconds.',ar:'تصاميم ترويجية جاهزة للطباعة بالذكاء الاصطناعي.',fr:'Designs professionnels générés par IA en quelques secondes.',es:'Diseños profesionales generados por IA listos para imprimir.',de:'KI-generierte druckfertige Designs in Sekunden.',tr:'Saniyeler içinde AI ile hazır baskı tasarımları.',zh:'AI 生成的印刷就绪商业设计，几秒钟即可完成。'},
+  feat_1:           {en:'High error correction',ar:'تصحيح خطأ عالٍ',fr:"Haute correction d'erreur",es:'Alta corrección de errores',de:'Hohe Fehlerkorrektur',tr:'Yüksek hata düzeltme',zh:'高容错率'},
+  feat_2:           {en:'URL, Wi-Fi, vCard, email, phone',ar:'روابط وواي فاي وبطاقة وبريد وهاتف',fr:'URL, Wi-Fi, vCard, e-mail, téléphone',es:'URL, Wi-Fi, vCard, correo, teléfono',de:'URL, WLAN, vCard, E-Mail, Telefon',tr:'URL, Wi-Fi, vCard, e-posta, telefon',zh:'链接、无线网络、名片、邮件、电话'},
+  feat_3:           {en:'PNG & SVG download · Free account',ar:'تحميل PNG و SVG · حساب مجاني',fr:'Téléchargement PNG & SVG · Compte gratuit',es:'Descarga PNG & SVG · Cuenta gratuita',de:'PNG & SVG Download · Kostenloses Konto',tr:'PNG & SVG indirme · Ücretsiz hesap',zh:'PNG 和 SVG 下载 · 免费账户'},
+  feat_4:           {en:'Custom colors & logo',ar:'ألوان وشعار مخصص',fr:'Couleurs & logo personnalisés',es:'Colores y logo personalizados',de:'Benutzerdefinierte Farben & Logo',tr:'Özel renkler ve logo',zh:'自定义颜色和徽标'},
+  faq_title:        {en:'Frequently Asked Questions',ar:'الأسئلة الشائعة',fr:'Questions fréquentes',es:'Preguntas frecuentes',de:'Häufig gestellte Fragen',tr:'Sık Sorulan Sorular',zh:'常见问题'},
+  faq_q1:           {en:'What types of QR codes can I generate?',ar:'ما أنواع رموز QR التي يمكنني إنشاؤها؟',fr:'Quels types de QR codes puis-je générer ?',es:'¿Qué tipos de códigos QR puedo generar?',de:'Welche QR-Code-Typen kann ich erstellen?',tr:'Hangi tür QR kodları oluşturabilirim?',zh:'我可以生成哪些类型的二维码？'},
+  faq_a1:           {en:'You can generate QR codes for URLs, plain text, Wi-Fi networks, vCard contacts, email addresses, and phone numbers — all for free with no account required.',ar:'يمكنك إنشاء رموز QR للروابط، والنصوص، وشبكات الواي فاي، وبطاقات الاتصال (vCard)، والبريد الإلكتروني، وأرقام الهاتف — كل ذلك مجاناً بدون حساب.',fr:'Vous pouvez générer des QR codes pour des URL, du texte, des réseaux Wi-Fi, des contacts vCard, des e-mails et des numéros de téléphone.',es:'Puede generar códigos QR para URL, texto, redes Wi-Fi, contactos vCard, correos y teléfonos.',de:'Sie können QR-Codes für URLs, Text, WLAN, vCard, E-Mails und Telefonnummern erstellen.',tr:'URL, metin, Wi-Fi, vCard, e-posta ve telefon numaraları için QR kodları oluşturabilirsiniz.',zh:'您可以为链接、文本、无线网络、名片、邮件和电话号码生成二维码。'},
+  faq_q2:           {en:'Can I customize the colors and add a logo?',ar:'هل يمكنني تخصيص الألوان وإضافة شعار؟',fr:'Puis-je personnaliser les couleurs et ajouter un logo ?',es:'¿Puedo personalizar los colores y agregar un logo?',de:'Kann ich die Farben anpassen und ein Logo hinzufügen?',tr:'Renkleri özelleştirebilir ve logo ekleyebilir miyim?',zh:'我可以自定义颜色并添加徽标吗？'},
+  faq_a2:           {en:'Yes! Click "Customize Colors & Logo" to change the QR code color, background color, and add your own logo or icon in the center of the QR code.',ar:'نعم! انقر على "تخصيص الألوان والشعار" لتغيير لون الرمز ولون الخلفية وإضافة شعارك أو أيقونتك في منتصف رمز QR.',fr:'Oui ! Cliquez sur "Personnaliser couleurs & logo" pour modifier les couleurs et ajouter votre logo.',es:'¡Sí! Haga clic en "Personalizar colores y logo" para cambiar los colores y agregar su logo.',de:'Ja! Klicken Sie auf "Farben & Logo anpassen", um Farben zu ändern und Ihr Logo hinzuzufügen.',tr:'Evet! Renkleri değiştirmek ve logo eklemek için "Renkleri ve logoyu özelleştir" seçeneğine tıklayın.',zh:'是的！点击"自定义颜色和徽标"来更改颜色并添加您的徽标。'},
+  faq_q3:           {en:'What file formats can I download?',ar:'ما صيغ الملفات التي يمكنني تحميلها؟',fr:'Quels formats de fichiers puis-je télécharger ?',es:'¿Qué formatos de archivo puedo descargar?',de:'Welche Dateiformate kann ich herunterladen?',tr:'Hangi dosya formatlarını indirebilirim?',zh:'我可以下载哪些文件格式？'},
+  faq_a3:           {en:'You can download your QR code as PNG (ideal for digital use) or SVG (ideal for print and scaling to any size without quality loss).',ar:'يمكنك تحميل رمز QR بصيغة PNG (مثالية للاستخدام الرقمي) أو SVG (مثالية للطباعة والتكبير بدون فقدان الجودة).',fr:"Vous pouvez télécharger en PNG (usage numérique) ou SVG (impression et mise à l'échelle).",es:'Puede descargar en PNG (uso digital) o SVG (impresión y escalado sin pérdida de calidad).',de:'Sie können als PNG (digital) oder SVG (Druck, verlustfreie Skalierung) herunterladen.',tr:'PNG (dijital kullanım) veya SVG (baskı ve kalite kaybı olmadan ölçekleme) olarak indirebilirsiniz.',zh:'您可以将二维码下载为 PNG（适合数字使用）或 SVG（适合打印，无质量损失）。'},
+  faq_q4:           {en:'Is QR Studio really free?',ar:'هل QR Studio مجاني فعلاً؟',fr:'QR Studio est-il vraiment gratuit ?',es:'¿Es QR Studio realmente gratuito?',de:'Ist QR Studio wirklich kostenlos?',tr:'QR Studio gerçekten ücretsiz mi?',zh:'QR Studio 真的免费吗？'},
+  faq_a4:           {en:'QR Studio is free to use with a free account. Simply sign up in seconds to start generating QR codes. We also offer an optional AI Pro design pack for businesses that need print-ready promotional materials.',ar:'QR Studio مجاني بحساب مجاني. سجّل حسابك خلال ثواني وابدأ فوراً. كما نوفر حزمة تصاميم AI احترافية اختيارية للشركات.',fr:'QR Studio est gratuit avec un compte gratuit. Inscrivez-vous en quelques secondes. Nous proposons aussi un pack AI Pro optionnel.',es:'QR Studio es gratuito con una cuenta gratuita. Regístrese en segundos. También ofrecemos un paquete AI Pro opcional.',de:'QR Studio ist kostenlos mit einem kostenlosen Konto. Melden Sie sich in Sekunden an. Wir bieten auch ein optionales AI Pro-Paket an.',tr:'QR Studio ücretsiz bir hesapla ücretsiz kullanılabilir. Saniyeler içinde kaydolun. İsteğe bağlı AI Pro paketi de sunuyoruz.',zh:'QR Studio 可免费使用（需免费账户）。几秒钟内注册即可开始。我们还提供可选的 AI Pro 设计包。'},
+  faq_q5:           {en:'How do I create a Wi-Fi QR code?',ar:'كيف أنشئ رمز QR للواي فاي؟',fr:'Comment créer un QR code Wi-Fi ?',es:'¿Cómo creo un código QR de Wi-Fi?',de:'Wie erstelle ich einen WLAN-QR-Code?',tr:'Wi-Fi QR kodu nasıl oluştururum?',zh:'如何创建无线网络二维码？'},
+  faq_a5:           {en:'Click the "Wi-Fi" tab, enter your network name (SSID), password, and encryption type, then click Generate. Scanning the QR code will automatically connect the device to your Wi-Fi network.',ar:'انقر على تبويب "واي فاي"، أدخل اسم الشبكة وكلمة المرور ونوع التشفير، ثم انقر على إنشاء. مسح الرمز سيوصل الجهاز تلقائياً بشبكة الواي فاي.',fr:"Cliquez sur l'onglet \"Wi-Fi\", entrez le nom du réseau, le mot de passe et le type de chiffrement, puis cliquez sur Générer.",es:'Haga clic en la pestaña "Wi-Fi", ingrese el nombre de red, contraseña y tipo de cifrado, luego haga clic en Generar.',de:'Klicken Sie auf den Tab "WLAN", geben Sie Netzwerkname, Passwort und Verschlüsselung ein und klicken Sie auf Erstellen.',tr:'"Wi-Fi" sekmesine tıklayın, ağ adını, şifreyi ve şifreleme türünü girin, ardından Oluştur\'a tıklayın.',zh:'点击"无线网络"选项卡，输入网络名称、密码和加密类型，然后点击生成。'},
+  footer:           {en:'QR Studio — Free QR Code Generator',ar:'استوديو QR — مجاني للجميع',fr:'QR Studio — Générateur de QR code gratuit',es:'QR Studio — Generador de código QR gratuito',de:'QR Studio — Kostenloser QR-Code-Generator',tr:'QR Studio — Ücretsiz QR Kod Oluşturucu',zh:'QR Studio — 免费二维码生成器'},
+  toast_copied:     {en:'✓ Copied!',ar:'✓ تم النسخ!',fr:'✓ Copié !',es:'✓ ¡Copiado!',de:'✓ Kopiert!',tr:'✓ Kopyalandı!',zh:'✓ 已复制！'},
+  toast_dl:         {en:'✓ QR Code downloaded!',ar:'✓ تم تحميل رمز QR!',fr:'✓ QR Code téléchargé !',es:'✓ ¡Código QR descargado!',de:'✓ QR-Code heruntergeladen!',tr:'✓ QR Kodu indirildi!',zh:'✓ 二维码已下载！'},
+  toast_err:        {en:'⚠ Could not generate QR. Try again.',ar:'⚠ تعذّر الإنشاء. حاول مجدداً.',fr:'⚠ Impossible de générer. Réessayez.',es:'⚠ No se pudo generar. Inténtelo de nuevo.',de:'⚠ QR konnte nicht erstellt werden.',tr:'⚠ QR oluşturulamadı. Tekrar deneyin.',zh:'⚠ 无法生成二维码，请重试。'},
+}
 
-QRStudio.setLang(QRStudio.getCurrentLang(), TR_IDX);
-document.getElementById('btn-en').onclick = () => QRStudio.setLang('en', TR_IDX);
-document.getElementById('btn-ar').onclick = () => QRStudio.setLang('ar', TR_IDX);
-if (window.QRAuth) QRAuth.renderNavAuth('nav-auth');
+/* ── Language dropdown logic ── */
+(function() {
+  const LANG_LABELS = {en:'🇬🇧 EN',ar:'🇸🇦 AR',fr:'🇫🇷 FR',es:'🇪🇸 ES',de:'🇩🇪 DE',tr:'🇹🇷 TR',zh:'🇨🇳 中文'};
+  const btn    = document.getElementById('lang-current');
+  const menu   = document.getElementById('lang-menu');
+  const opts   = document.querySelectorAll('.lang-opt');
+
+  function applyLang(lang) {
+    QRStudio.setLang(lang, TR_IDX);
+    btn.textContent = (LANG_LABELS[lang] || lang.toUpperCase()) + ' ▾';
+    opts.forEach(o => o.classList.toggle('active', o.dataset.lang === lang));
+    localStorage.setItem('qrs_lang', lang);
+    menu.classList.remove('open');
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menu.classList.toggle('open');
+  });
+
+  opts.forEach(o => o.addEventListener('click', () => applyLang(o.dataset.lang)));
+
+  document.addEventListener('click', () => menu.classList.remove('open'));
+
+  // Init
+  const saved = localStorage.getItem('qrs_lang') || navigator.language.slice(0,2) || 'en';
+  const supported = ['en','ar','fr','es','de','tr','zh'];
+  applyLang(supported.includes(saved) ? saved : 'en');
+})();
+
+
 
 /* ── State ── */
 let selectedSize  = 240;
