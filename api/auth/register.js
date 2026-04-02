@@ -3,6 +3,11 @@
  * Body: { email, password, full_name? }
  * Returns: { ok, message, userId }
  * Public — no auth required.
+ *
+ * Strategy: Use admin createUser with email_confirm:true so users
+ * can log in immediately without waiting for a confirmation email.
+ * Supabase free plan has very low email rate limits (3/hour) which
+ * makes confirmation emails unreliable.
  */
 'use strict';
 
@@ -24,40 +29,34 @@ module.exports = async function handler(req, res) {
   if (!password || password.length < 8)
     return res.status(400).json({ error: 'Password must be at least 8 characters.' });
 
-  // Use anon client with signUp so Supabase sends the confirmation email automatically
-  const origin   = process.env.ALLOWED_ORIGIN || 'https://www.getqrdesign.com';
-  const supabase = createClient(
+  // Use service role (admin) client to create user with email auto-confirmed
+  const supabaseAdmin = createClient(
     process.env.SUPABASE_URL,
-    process.env.SUPABASE_ANON_KEY,
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
 
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await supabaseAdmin.auth.admin.createUser({
     email,
     password,
-    options: {
-      data:            { full_name: fullName || null },
-      emailRedirectTo: `${origin}/auth.html?mode=confirmed`,
-    },
+    email_confirm: true,   // ← auto-confirm, no email needed
+    user_metadata: { full_name: fullName || null },
   });
 
   if (error) {
+    // Handle duplicate user
     if (error.message?.toLowerCase().includes('already registered') ||
         error.message?.toLowerCase().includes('already exists') ||
-        error.message?.toLowerCase().includes('user already registered'))
+        error.message?.toLowerCase().includes('user already registered') ||
+        error.status === 422)
       return res.status(409).json({ error: 'An account with this email already exists.' });
     console.error('[register]', error.message);
     return res.status(400).json({ error: error.message });
   }
 
-  // If identities array is empty, the user already exists (Supabase quirk)
-  if (data.user && data.user.identities && data.user.identities.length === 0) {
-    return res.status(409).json({ error: 'An account with this email already exists.' });
-  }
-
   return res.status(201).json({
     ok:      true,
-    message: 'Account created! Please check your email and click the confirmation link before signing in.',
+    message: 'Account created successfully! You can now sign in.',
     userId:  data.user?.id,
   });
 };
