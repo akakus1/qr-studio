@@ -11,6 +11,8 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Pricing from "./pages/Pricing";
 import Redirect from "./pages/Redirect";
+import AdminBlog from "./pages/AdminBlog";
+import BulkQR from "./pages/BulkQR";
 
 function Router() {
   return (
@@ -22,6 +24,8 @@ function Router() {
       <Route path="/blog/:slug" component={BlogPost} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/r/:slug" component={Redirect} />
+      <Route path="/admin/blog" component={AdminBlog} />
+      <Route path="/bulk" component={BulkQR} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

@@ -154,6 +154,28 @@ export async function upsertBlogPost(data: InsertBlogPost) {
   await db.insert(blogPosts).values(data).onDuplicateKeyUpdate({ set: { ...data } });
 }
 
+export async function getFullPostBySlug(slug: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function deleteBlogPost(slug: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.delete(blogPosts).where(eq(blogPosts.slug, slug));
+}
+
+export async function getAllBlogPosts() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select({
+    slug: blogPosts.slug, title: blogPosts.title, excerpt: blogPosts.excerpt,
+    published: blogPosts.published, publishedAt: blogPosts.publishedAt,
+  }).from(blogPosts).orderBy(desc(blogPosts.createdAt));
+}
+
 export async function getTotalQrCount() {
   const db = await getDb();
   if (!db) return 0;

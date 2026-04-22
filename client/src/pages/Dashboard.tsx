@@ -65,6 +65,10 @@ export default function Dashboard() {
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <a href="/" style={{ fontSize: ".85rem", color: "var(--tmuted)" }}>Generator</a>
           <a href="/pricing" style={{ fontSize: ".85rem", color: "var(--tmuted)" }}>Pricing</a>
+          <a href="/bulk" style={{ fontSize: ".85rem", color: "var(--tmuted)" }}>Bulk QR</a>
+          {user?.role === "admin" && (
+            <a href="/admin/blog" style={{ fontSize: ".85rem", color: "var(--purpleL)", fontWeight: 600 }}>Blog Editor</a>
+          )}
           <div style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--s1)", border: "1px solid var(--border)", borderRadius: "var(--rfull)", padding: "6px 14px" }}>
             <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg,var(--purple),var(--purpleD))", display: "flex", alignItems: "center", justifyContent: "center", fontSize: ".75rem", fontWeight: 700, color: "#fff" }}>
               {user?.name?.[0]?.toUpperCase() ?? "U"}

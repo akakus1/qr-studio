@@ -2,7 +2,8 @@ import { TRPCError } from "@trpc/server";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 import {
-  createQrCode, deleteQrCode, getPostBySlug, getPublishedPosts, getQrCodeById,
+  createQrCode, deleteBlogPost, deleteQrCode, getAllBlogPosts, getDb, getFullPostBySlug,
+  getPostBySlug, getPublishedPosts, getQrCodeById,
   getQrCodeBySlug, getQrCodesByUser, getScanSummaryByUser, getScansByQrCode,
   getTotalQrCount, incrementScanCount, recordScan, updateQrCode, updateUserPlan,
   upsertBlogPost,
@@ -200,6 +201,18 @@ const redirectRouter = router({
       }
       await recordScan({ qrCodeId: qr.id, device, referrer: input.referrer ?? null, ip });
       await incrementScanCount(qr.id);
+
+      // Scan milestone notifications (fire-and-forget)
+      const newCount = (qr.scanCount ?? 0) + 1;
+      const MILESTONES = [10, 50, 100, 500, 1000, 5000, 10000];
+      if (MILESTONES.includes(newCount)) {
+        const { notifyOwner } = await import("./_core/notification");
+        notifyOwner({
+          title: `🎉 QR Milestone: ${newCount} scans`,
+          content: `Your QR code "${qr.name || qr.slug}" just reached ${newCount} scans! Keep sharing it to grow further.`,
+        }).catch(() => {}); // non-blocking
+      }
+
       return { destination: qr.content, type: qr.type };
     }),
 });
@@ -218,6 +231,26 @@ const subscriptionRouter = router({
 });
 
 const blogRouter = router({
+  adminList: protectedProcedure
+    .query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      return getAllBlogPosts();
+    }),
+  adminGet: protectedProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ ctx, input }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      const post = await getFullPostBySlug(input.slug);
+      if (!post) throw new TRPCError({ code: "NOT_FOUND" });
+      return post;
+    }),
+  adminDelete: protectedProcedure
+    .input(z.object({ slug: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      await deleteBlogPost(input.slug);
+      return { success: true };
+    }),
   list: publicProcedure
     .input(z.object({ limit: z.number().default(10), offset: z.number().default(0) }))
     .query(async ({ input }) => {
