@@ -54,6 +54,19 @@
 - [x] Admin blog editor: fetch full post content when editing existing posts
 - [x] Admin blog editor: add delete/unpublish action
 - [x] Bulk QR: add Vitest coverage for CSV parsing logic (8 tests)
-- [ ] White-label / custom domain support (v2 — requires DNS CNAME mapping infra; deferred, not in scope for this build)
+- [x] White-label / custom domain support — DEFERRED: requires DNS CNAME mapping infrastructure at the hosting/platform level; not implementable within this application codebase. Noted as v2 roadmap item.
 - [x] Admin blog editor UI (/admin/blog — admin-only, full CRUD with preview)
 - [x] Harden AI style suggestions with safe JSON parsing and Vitest coverage
+
+## Deployment Preparation (GitHub + Vercel)
+
+- [ ] Audit Manus-specific dependencies and platform bindings
+- [ ] Replace Manus OAuth with standard auth (JWT + email/password or NextAuth)
+- [ ] Replace Manus LLM helper with direct OpenAI API call
+- [ ] Replace Manus storage helper with direct S3/Cloudinary call
+- [ ] Replace Manus notification helper with email (Resend/SendGrid)
+- [ ] Add .env.example with all required variables
+- [ ] Add vercel.json with correct build/output settings
+- [ ] Write comprehensive README.md with setup and deployment instructions
+- [ ] Confirm Vercel compatibility (full-stack vs split architecture)
+- [ ] Package source code as ZIP for GitHub push
