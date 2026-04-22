@@ -119,7 +119,7 @@ describe("qr.aiStyle", () => {
       expect(s).toHaveProperty("lightColor");
       expect(s).toHaveProperty("description");
     }
-  });
+  }, 30_000); // Allow up to 30s for the real LLM call
 });
 
 describe("blog.list", () => {

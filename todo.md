@@ -47,13 +47,13 @@
 - [x] AI style suggestions (LLM-powered color scheme generator)
 
 ## Pending / Future
-- [ ] Stripe payment integration for real billing (currently mock upgrade)
+- [x] Stripe payment integration (Stripe Checkout, webhook handler, plan upgrade on payment)
 - [x] Scan milestone notifications (10, 50, 100, 500, 1000, 5000, 10000 scans — owner push notification)
 - [x] Bulk QR code generation (/bulk — Pro plan, CSV upload, batch PNG download)
-- [ ] API access for Business plan users (API key management UI)
+- [ ] API access for Business plan users (API key management UI — future phase)
 - [x] Admin blog editor: fetch full post content when editing existing posts
 - [x] Admin blog editor: add delete/unpublish action
 - [x] Bulk QR: add Vitest coverage for CSV parsing logic (8 tests)
-- [ ] White-label / custom domain support
+- [ ] White-label / custom domain support (future phase — requires custom domain infra)
 - [x] Admin blog editor UI (/admin/blog — admin-only, full CRUD with preview)
 - [x] Harden AI style suggestions with safe JSON parsing and Vitest coverage

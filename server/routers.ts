@@ -228,6 +228,21 @@ const subscriptionRouter = router({
       await updateUserPlan(ctx.user.id, input.plan, expiresAt);
       return { success: true, plan: input.plan, expiresAt };
     }),
+  createCheckout: protectedProcedure
+    .input(z.object({
+      planId: z.enum(["pro_monthly", "pro_yearly", "business_monthly", "business_yearly"]),
+      origin: z.string().url(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const { createCheckoutSession } = await import("./stripe");
+      return createCheckoutSession({
+        userId: ctx.user.id,
+        userEmail: ctx.user.email ?? null,
+        userName: ctx.user.name ?? null,
+        planId: input.planId,
+        origin: input.origin,
+      });
+    }),
 });
 
 const blogRouter = router({

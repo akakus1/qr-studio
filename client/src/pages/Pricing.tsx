@@ -38,16 +38,24 @@ const PLANS = [
 export default function Pricing() {
   const { isAuthenticated } = useAuth();
   const [yearly, setYearly] = useState(false);
-  const upgradeMutation = trpc.subscription.upgrade.useMutation({
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+
+  const checkoutMutation = trpc.subscription.createCheckout.useMutation({
     onSuccess: (data) => {
-      toast.success(`You are now on the ${data.plan} plan!`);
+      window.open(data.url, "_blank");
+      toast.success("Redirecting to secure checkout…");
+      setLoadingPlan(null);
     },
-    onError: () => toast.error("Upgrade failed. Please try again."),
+    onError: () => { toast.error("Checkout failed. Please try again."); setLoadingPlan(null); },
   });
 
   const handleUpgrade = (planId: "pro" | "business") => {
     if (!isAuthenticated) { window.location.href = getLoginUrl(); return; }
-    upgradeMutation.mutate({ plan: planId });
+    const stripeId = yearly
+      ? `${planId}_yearly` as const
+      : `${planId}_monthly` as const;
+    setLoadingPlan(planId);
+    checkoutMutation.mutate({ planId: stripeId, origin: window.location.origin });
   };
 
   return (
@@ -131,9 +139,9 @@ export default function Pricing() {
                 </a>
               ) : (
                 <button onClick={() => handleUpgrade(plan.id as "pro" | "business")}
-                  disabled={upgradeMutation.isPending}
+                  disabled={checkoutMutation.isPending && loadingPlan === plan.id}
                   style={{ width: "100%", padding: "13px 0", background: plan.popular ? "linear-gradient(135deg,#7C3AED,#5B21B6)" : "transparent", border: `1px solid ${plan.popular ? "transparent" : "var(--border)"}`, borderRadius: "var(--r12)", color: plan.popular ? "#fff" : "var(--t2)", fontSize: ".9rem", fontWeight: 700, fontFamily: "'Syne', sans-serif", cursor: "pointer", transition: "all var(--tr)", boxShadow: plan.popular ? "0 4px 24px rgba(124,58,237,0.4)" : "none" }}>
-                  {upgradeMutation.isPending ? "Processing…" : plan.cta}
+                  {checkoutMutation.isPending && loadingPlan === plan.id ? "Opening checkout…" : plan.cta}
                 </button>
               )}
             </div>
