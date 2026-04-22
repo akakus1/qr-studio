@@ -50,10 +50,10 @@
 - [x] Stripe payment integration (Stripe Checkout, webhook handler, plan upgrade on payment)
 - [x] Scan milestone notifications (10, 50, 100, 500, 1000, 5000, 10000 scans — owner push notification)
 - [x] Bulk QR code generation (/bulk — Pro plan, CSV upload, batch PNG download)
-- [ ] API access for Business plan users (API key management UI — future phase)
+- [x] API access for Business plan users (SHA-256 hashed API keys, create/revoke UI at /api-keys, Business plan gated, max 5 keys, usage tracking)
 - [x] Admin blog editor: fetch full post content when editing existing posts
 - [x] Admin blog editor: add delete/unpublish action
 - [x] Bulk QR: add Vitest coverage for CSV parsing logic (8 tests)
-- [ ] White-label / custom domain support (future phase — requires custom domain infra)
+- [ ] White-label / custom domain support (v2 — requires DNS CNAME mapping infra; deferred, not in scope for this build)
 - [x] Admin blog editor UI (/admin/blog — admin-only, full CRUD with preview)
 - [x] Harden AI style suggestions with safe JSON parsing and Vitest coverage

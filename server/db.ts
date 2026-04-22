@@ -1,6 +1,7 @@
+import { createHash, randomBytes } from "crypto";
 import { and, desc, eq, gte, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { blogPosts, InsertBlogPost, InsertQrCode, InsertScanEvent, InsertUser, qrCodes, scanEvents, users } from "../drizzle/schema";
+import { apiKeys, blogPosts, InsertBlogPost, InsertQrCode, InsertScanEvent, InsertUser, qrCodes, scanEvents, users } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -165,6 +166,49 @@ export async function deleteBlogPost(slug: string) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   await db.delete(blogPosts).where(eq(blogPosts.slug, slug));
+}
+
+// ── API Key helpers ──────────────────────────────────────────────────────────
+
+export async function createApiKey(userId: number, name: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const raw = `qrs_${randomBytes(32).toString("hex")}`;
+  const keyHash = createHash("sha256").update(raw).digest("hex");
+  const keyPrefix = raw.slice(0, 12);
+  await db.insert(apiKeys).values({ userId, name, keyHash, keyPrefix });
+  return { raw, keyPrefix }; // raw shown once, never stored
+}
+
+export async function getApiKeysByUser(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select({
+    id: apiKeys.id, name: apiKeys.name, keyPrefix: apiKeys.keyPrefix,
+    isActive: apiKeys.isActive, lastUsedAt: apiKeys.lastUsedAt, createdAt: apiKeys.createdAt,
+  }).from(apiKeys).where(eq(apiKeys.userId, userId));
+}
+
+export async function revokeApiKey(id: number, userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(apiKeys).set({ isActive: false }).where(
+    and(eq(apiKeys.id, id), eq(apiKeys.userId, userId))
+  );
+}
+
+export async function verifyApiKey(raw: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const keyHash = createHash("sha256").update(raw).digest("hex");
+  const result = await db.select({ userId: apiKeys.userId, id: apiKeys.id })
+    .from(apiKeys)
+    .where(and(eq(apiKeys.keyHash, keyHash), eq(apiKeys.isActive, true)))
+    .limit(1);
+  if (result.length === 0) return null;
+  // Update lastUsedAt asynchronously
+  db.update(apiKeys).set({ lastUsedAt: new Date() }).where(eq(apiKeys.id, result[0].id)).catch(() => {});
+  return result[0].userId;
 }
 
 export async function getAllBlogPosts() {

@@ -15,6 +15,13 @@
       "when": 1776852722305,
       "tag": "0001_secret_reptil",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1776854842073,
+      "tag": "0002_lyrical_mesmero",
+      "breakpoints": true
     }
   ]
 }

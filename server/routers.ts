@@ -2,10 +2,10 @@ import { TRPCError } from "@trpc/server";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 import {
-  createQrCode, deleteBlogPost, deleteQrCode, getAllBlogPosts, getDb, getFullPostBySlug,
-  getPostBySlug, getPublishedPosts, getQrCodeById,
+  createApiKey, createQrCode, deleteBlogPost, deleteQrCode, getAllBlogPosts, getApiKeysByUser,
+  getDb, getFullPostBySlug, getPostBySlug, getPublishedPosts, getQrCodeById,
   getQrCodeBySlug, getQrCodesByUser, getScanSummaryByUser, getScansByQrCode,
-  getTotalQrCount, incrementScanCount, recordScan, updateQrCode, updateUserPlan,
+  getTotalQrCount, incrementScanCount, recordScan, revokeApiKey, updateQrCode, updateUserPlan,
   upsertBlogPost,
 } from "./db";
 import { COOKIE_NAME } from "@shared/const";
@@ -299,6 +299,28 @@ const blogRouter = router({
     }),
 });
 
+const apiKeyRouter = router({
+  list: protectedProcedure.query(async ({ ctx }) => {
+    if (ctx.user.plan !== "business") throw new TRPCError({ code: "FORBIDDEN", message: "API access requires the Business plan." });
+    return getApiKeysByUser(ctx.user.id);
+  }),
+  create: protectedProcedure
+    .input(z.object({ name: z.string().min(1).max(128) }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.plan !== "business") throw new TRPCError({ code: "FORBIDDEN", message: "API access requires the Business plan." });
+      const keys = await getApiKeysByUser(ctx.user.id);
+      if (keys.length >= 5) throw new TRPCError({ code: "BAD_REQUEST", message: "Maximum 5 API keys per account." });
+      return createApiKey(ctx.user.id, input.name);
+    }),
+  revoke: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      if (ctx.user.plan !== "business") throw new TRPCError({ code: "FORBIDDEN", message: "API access requires the Business plan." });
+      await revokeApiKey(input.id, ctx.user.id);
+      return { success: true };
+    }),
+});
+
 export const appRouter = router({
   system: systemRouter,
   auth: router({
@@ -313,6 +335,7 @@ export const appRouter = router({
   redirect: redirectRouter,
   subscription: subscriptionRouter,
   blog: blogRouter,
+  apiKey: apiKeyRouter,
 });
 
 export type AppRouter = typeof appRouter;

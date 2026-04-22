@@ -13,6 +13,7 @@ import Pricing from "./pages/Pricing";
 import Redirect from "./pages/Redirect";
 import AdminBlog from "./pages/AdminBlog";
 import BulkQR from "./pages/BulkQR";
+import ApiKeys from "./pages/ApiKeys";
 
 function Router() {
   return (
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/r/:slug" component={Redirect} />
       <Route path="/admin/blog" component={AdminBlog} />
       <Route path="/bulk" component={BulkQR} />
+      <Route path="/api-keys" component={ApiKeys} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

@@ -37,6 +37,32 @@ function makeCtx(overrides: Partial<AuthenticatedUser> = {}): TrpcContext {
   };
 }
 
+describe("apiKey router", () => {
+  it("list rejects free plan users", async () => {
+    const ctx = makeCtx({ plan: "free" });
+    const caller = appRouter.createCaller(ctx);
+    await expect(caller.apiKey.list()).rejects.toThrow("Business plan");
+  });
+
+  it("list rejects pro plan users", async () => {
+    const ctx = makeCtx({ plan: "pro" });
+    const caller = appRouter.createCaller(ctx);
+    await expect(caller.apiKey.list()).rejects.toThrow("Business plan");
+  });
+
+  it("create rejects non-business users", async () => {
+    const ctx = makeCtx({ plan: "free" });
+    const caller = appRouter.createCaller(ctx);
+    await expect(caller.apiKey.create({ name: "test" })).rejects.toThrow("Business plan");
+  });
+
+  it("revoke rejects non-business users", async () => {
+    const ctx = makeCtx({ plan: "free" });
+    const caller = appRouter.createCaller(ctx);
+    await expect(caller.apiKey.revoke({ id: 1 })).rejects.toThrow("Business plan");
+  });
+});
+
 describe("subscription.createCheckout", () => {
   beforeEach(() => {
     vi.clearAllMocks();

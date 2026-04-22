@@ -82,3 +82,18 @@ export const blogPosts = mysqlTable("blog_posts", {
 
 export type BlogPost = typeof blogPosts.$inferSelect;
 export type InsertBlogPost = typeof blogPosts.$inferInsert;
+
+// ── API Keys (Business plan) ────────────────────────────────────────────────────────────────────────────────
+export const apiKeys = mysqlTable("api_keys", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  name: varchar("name", { length: 128 }).notNull().default("My API Key"),
+  keyHash: varchar("keyHash", { length: 128 }).notNull().unique(), // SHA-256 of the raw key
+  keyPrefix: varchar("keyPrefix", { length: 16 }).notNull(), // first 8 chars for display
+  isActive: boolean("isActive").notNull().default(true),
+  lastUsedAt: timestamp("lastUsedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ApiKey = typeof apiKeys.$inferSelect;
+export type InsertApiKey = typeof apiKeys.$inferInsert;

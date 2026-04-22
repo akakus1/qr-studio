@@ -49,6 +49,42 @@ async function startServer() {
       createContext,
     })
   );
+
+  // REST API v1 — authenticated via Bearer API key (Business plan)
+  app.use("/api/v1", async (req, res, next) => {
+    const auth = req.headers["authorization"];
+    if (!auth || !auth.startsWith("Bearer ")) {
+      res.status(401).json({ error: "Missing or invalid Authorization header. Use: Bearer qrs_your_key" });
+      return;
+    }
+    const raw = auth.slice(7);
+    const { verifyApiKey, getQrCodesByUser, createQrCode } = await import("../db");
+    const userId = await verifyApiKey(raw);
+    if (!userId) {
+      res.status(401).json({ error: "Invalid or revoked API key." });
+      return;
+    }
+    (req as express.Request & { apiUserId: number }).apiUserId = userId;
+    next();
+  });
+
+  app.get("/api/v1/qr", async (req, res) => {
+    const { getQrCodesByUser } = await import("../db");
+    const userId = (req as express.Request & { apiUserId: number }).apiUserId;
+    const codes = await getQrCodesByUser(userId);
+    res.json({ data: codes });
+  });
+
+  app.post("/api/v1/qr", async (req, res) => {
+    const { createQrCode } = await import("../db");
+    const { nanoid } = await import("nanoid");
+    const userId = (req as express.Request & { apiUserId: number }).apiUserId;
+    const { type = "url", content, name = "API QR Code", isDynamic = false } = req.body;
+    if (!content) { res.status(400).json({ error: "content is required" }); return; }
+    const slug = nanoid(8);
+    await createQrCode({ userId, slug, type, content, name, isDynamic });
+    res.status(201).json({ success: true, slug, redirectUrl: `/r/${slug}` });
+  });
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);

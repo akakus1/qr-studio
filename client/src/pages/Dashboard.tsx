@@ -66,6 +66,9 @@ export default function Dashboard() {
           <a href="/" style={{ fontSize: ".85rem", color: "var(--tmuted)" }}>Generator</a>
           <a href="/pricing" style={{ fontSize: ".85rem", color: "var(--tmuted)" }}>Pricing</a>
           <a href="/bulk" style={{ fontSize: ".85rem", color: "var(--tmuted)" }}>Bulk QR</a>
+          {user?.plan === "business" && (
+            <a href="/api-keys" style={{ fontSize: ".85rem", color: "var(--tmuted)" }}>API Keys</a>
+          )}
           {user?.role === "admin" && (
             <a href="/admin/blog" style={{ fontSize: ".85rem", color: "var(--purpleL)", fontWeight: 600 }}>Blog Editor</a>
           )}
