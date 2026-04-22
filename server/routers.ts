@@ -112,6 +112,71 @@ const qrRouter = router({
   totalCount: publicProcedure.query(async () => {
     return getTotalQrCount();
   }),
+
+  aiStyle: publicProcedure
+    .input(z.object({
+      type: z.enum(["url", "text", "wifi", "vcard", "email", "phone", "instagram", "location", "pdf"]),
+      content: z.string().max(500),
+    }))
+    .mutation(async ({ input }) => {
+      const { invokeLLM } = await import("./_core/llm");
+      const systemPrompt = `You are a QR code design expert. Given a QR code type and content, suggest 4 beautiful color schemes that would suit the brand or context. Each suggestion must have a name, a dark color (hex, for QR dots), a light color (hex, for background), and a one-sentence description. Return valid JSON only.`;
+      const userPrompt = `QR type: ${input.type}\nContent: ${input.content.slice(0, 200)}\n\nSuggest 4 color schemes.`;
+      const response = await invokeLLM({
+        messages: [{ role: "system", content: systemPrompt }, { role: "user", content: userPrompt }],
+        response_format: {
+          type: "json_schema",
+          json_schema: {
+            name: "color_suggestions",
+            strict: true,
+            schema: {
+              type: "object",
+              properties: {
+                suggestions: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      name: { type: "string" },
+                      darkColor: { type: "string" },
+                      lightColor: { type: "string" },
+                      description: { type: "string" },
+                    },
+                    required: ["name", "darkColor", "lightColor", "description"],
+                    additionalProperties: false,
+                  },
+                },
+              },
+              required: ["suggestions"],
+              additionalProperties: false,
+            },
+          },
+        },
+      });
+      const raw = response.choices[0]?.message?.content ?? "{}";
+      let parsed: { suggestions: { name: string; darkColor: string; lightColor: string; description: string }[] };
+      try {
+        const str = typeof raw === "string" ? raw : JSON.stringify(raw);
+        // Strip markdown code fences if present
+        const cleaned = str.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+        parsed = JSON.parse(cleaned);
+      } catch {
+        // Fallback: return sensible default suggestions
+        parsed = {
+          suggestions: [
+            { name: "Classic Black", darkColor: "#000000", lightColor: "#ffffff", description: "Timeless black on white, maximum contrast and scan reliability." },
+            { name: "Deep Purple", darkColor: "#5B21B6", lightColor: "#F5F3FF", description: "Brand-aligned purple tones for a modern, professional look." },
+            { name: "Midnight Navy", darkColor: "#1E3A5F", lightColor: "#EFF6FF", description: "Deep navy on soft blue, great for corporate and finance brands." },
+            { name: "Forest Green", darkColor: "#14532D", lightColor: "#F0FDF4", description: "Natural green palette, ideal for eco, health, and food brands." },
+          ],
+        };
+      }
+      // Validate shape
+      if (!Array.isArray(parsed?.suggestions)) {
+        parsed = { suggestions: [] };
+      }
+      return parsed;
+    }),
 });
 
 const redirectRouter = router({

@@ -103,6 +103,25 @@ describe("subscription.current", () => {
   });
 });
 
+describe("qr.aiStyle", () => {
+  it("returns 4 suggestions for a URL type", async () => {
+    const ctx = makeCtx({ user: null });
+    const caller = appRouter.createCaller(ctx);
+    const result = await caller.qr.aiStyle({ type: "url", content: "https://example.com" });
+    expect(result).toHaveProperty("suggestions");
+    expect(Array.isArray(result.suggestions)).toBe(true);
+    // Should always return at least 1 suggestion (fallback guarantees 4)
+    expect(result.suggestions.length).toBeGreaterThanOrEqual(1);
+    if (result.suggestions.length > 0) {
+      const s = result.suggestions[0];
+      expect(s).toHaveProperty("name");
+      expect(s).toHaveProperty("darkColor");
+      expect(s).toHaveProperty("lightColor");
+      expect(s).toHaveProperty("description");
+    }
+  });
+});
+
 describe("blog.list", () => {
   it("returns empty list when no posts exist", async () => {
     const ctx = makeCtx({ user: null });

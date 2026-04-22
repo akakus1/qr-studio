@@ -39,18 +39,18 @@
 
 ## Phase 5: Advanced Features
 - [x] QR code customisation: colors, logo upload, size
-- [x] All 6 QR types: URL, Text, Wi-Fi, vCard, Email, Phone
+- [x] All 9 QR types: URL, Text, Wi-Fi, vCard, Email, Phone, Instagram, Location, PDF
 - [x] qr-code-styling library for high-quality rounded QR codes
 - [x] Pricing page with monthly/yearly toggle and feature comparison table
 - [x] Dashboard with stats overview (total QR, scans, active, dynamic)
 - [x] Upgrade flow (plan selection → backend mutation)
+- [x] AI style suggestions (LLM-powered color scheme generator)
 
 ## Pending / Future
 - [ ] Stripe payment integration for real billing
 - [ ] Email notifications on scan milestones
-- [ ] QR code AI style suggestions (LLM-powered)
 - [ ] Bulk QR code generation
 - [ ] API access for Business plan users
 - [ ] White-label / custom domain support
-- [ ] Instagram, Location, PDF QR types (UI panels)
-- [ ] Admin blog editor UI
+- [ ] Admin blog editor UI (backend tRPC procedure exists; needs frontend page)
+- [x] Harden AI style suggestions with safe JSON parsing and Vitest coverage

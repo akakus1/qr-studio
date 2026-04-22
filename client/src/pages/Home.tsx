@@ -6,7 +6,7 @@ import { useLocation } from "wouter";
 import QRCodeStyling from "qr-code-styling";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-type QrType = "url" | "text" | "wifi" | "vcard" | "email" | "phone";
+type QrType = "url" | "text" | "wifi" | "vcard" | "email" | "phone" | "instagram" | "location" | "pdf";
 type PlanId = "free" | "pro" | "business";
 
 const PLANS: { id: PlanId; label: string; price: string; period: string; features: string[]; popular?: boolean }[] = [
@@ -56,6 +56,12 @@ function buildQrContent(type: QrType, fields: Record<string, string>): string {
       return `mailto:${fields.emailTo || ""}?subject=${encodeURIComponent(fields.emailSubject || "")}&body=${encodeURIComponent(fields.emailBody || "")}`;
     case "phone":
       return `tel:${fields.phone || ""}`;
+    case "instagram":
+      return `https://instagram.com/${(fields.igHandle || "").replace(/^@/, "")}`;
+    case "location":
+      return `geo:${fields.lat || "0"},${fields.lng || "0"}?q=${encodeURIComponent(fields.locationName || "")}`;
+    case "pdf":
+      return fields.pdfUrl || "";
     default:
       return "";
   }
@@ -81,6 +87,9 @@ export default function Home() {
   const [qrName, setQrName] = useState("");
   const [error, setError] = useState("");
   const [toast, setToast] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiSuggestions, setAiSuggestions] = useState<{ name: string; darkColor: string; lightColor: string; description: string }[]>([]);
+  const [showAiPanel, setShowAiPanel] = useState(false);
 
   // Modal state
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -96,6 +105,24 @@ export default function Home() {
   // tRPC
   const totalCountQuery = trpc.qr.totalCount.useQuery();
   const saveQrMutation = trpc.qr.save.useMutation();
+  const aiStyleMutation = trpc.qr.aiStyle.useMutation();
+
+  // ── AI Style Suggestions ─────────────────────────────────────────────────────
+  const handleAiStyle = async () => {
+    const content = buildQrContent(activeType, fields);
+    if (!content) { showToast("Enter some content first."); return; }
+    setAiLoading(true);
+    setShowAiPanel(true);
+    try {
+      const result = await aiStyleMutation.mutateAsync({ type: activeType, content });
+      setAiSuggestions(result.suggestions);
+    } catch {
+      showToast("AI suggestions unavailable. Try again.");
+      setShowAiPanel(false);
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   // ── Toast helper ─────────────────────────────────────────────────────────────
   const showToast = useCallback((msg: string) => {
@@ -315,10 +342,9 @@ export default function Home() {
 
           {/* Type Tabs */}
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 24 }}>
-            {(["url", "text", "wifi", "vcard", "email", "phone"] as QrType[]).map(t => {
-              const icons: Record<QrType, string> = { url: "🔗", text: "📝", wifi: "📶", vcard: "👤", email: "✉️", phone: "📞" };
-              const labels: Record<QrType, string> = { url: "URL", text: "Text", wifi: "Wi-Fi", vcard: "vCard", email: "Email", phone: "Phone" };
-              return (
+            {(["url", "text", "wifi", "vcard", "email", "phone", "instagram", "location", "pdf"] as QrType[]).map(t => {
+              const icons: Record<QrType, string> = { url: "🔗", text: "📝", wifi: "📶", vcard: "👤", email: "✉️", phone: "📞", instagram: "📸", location: "📍", pdf: "📄" };
+              const labels: Record<QrType, string> = { url: "URL", text: "Text", wifi: "Wi-Fi", vcard: "vCard", email: "Email", phone: "Phone", instagram: "Instagram", location: "Location", pdf: "PDF" };              return (
                 <button key={t} onClick={() => { setActiveType(t); setGenerated(false); }}
                   style={{
                     display: "flex", alignItems: "center", gap: 5, padding: "8px 14px",
@@ -390,6 +416,43 @@ export default function Home() {
               <InputGroup label="Phone Number">
                 <input type="tel" placeholder="+966 5X XXX XXXX" value={fields.phone || ""}
                   onChange={e => setField("phone", e.target.value)} style={inputStyle} />
+              </InputGroup>
+            )}
+            {activeType === "instagram" && (
+              <InputGroup label="Instagram Username">
+                <div style={{ position: "relative" }}>
+                  <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--tmuted)", fontSize: ".9rem", pointerEvents: "none" }}>@</span>
+                  <input type="text" placeholder="yourusername" value={fields.igHandle || ""}
+                    onChange={e => setField("igHandle", e.target.value)}
+                    style={{ ...inputStyle, paddingLeft: 32 }} />
+                </div>
+                <p style={{ fontSize: ".75rem", color: "var(--tmuted)", marginTop: 6 }}>Generates a QR that opens your Instagram profile directly.</p>
+              </InputGroup>
+            )}
+            {activeType === "location" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <InputGroup label="Place Name (optional)">
+                  <input type="text" placeholder="Burj Khalifa, Dubai" value={fields.locationName || ""}
+                    onChange={e => setField("locationName", e.target.value)} style={inputStyle} />
+                </InputGroup>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <InputGroup label="Latitude">
+                    <input type="number" step="any" placeholder="25.1972" value={fields.lat || ""}
+                      onChange={e => setField("lat", e.target.value)} style={inputStyle} />
+                  </InputGroup>
+                  <InputGroup label="Longitude">
+                    <input type="number" step="any" placeholder="55.2744" value={fields.lng || ""}
+                      onChange={e => setField("lng", e.target.value)} style={inputStyle} />
+                  </InputGroup>
+                </div>
+                <p style={{ fontSize: ".75rem", color: "var(--tmuted)" }}>Opens Google Maps to the exact coordinates when scanned.</p>
+              </div>
+            )}
+            {activeType === "pdf" && (
+              <InputGroup label="PDF URL">
+                <input type="url" placeholder="https://example.com/document.pdf" value={fields.pdfUrl || ""}
+                  onChange={e => setField("pdfUrl", e.target.value)} style={inputStyle} />
+                <p style={{ fontSize: ".75rem", color: "var(--tmuted)", marginTop: 6 }}>Paste a direct link to your PDF. The QR code will open it when scanned.</p>
               </InputGroup>
             )}
           </div>
@@ -473,6 +536,54 @@ export default function Home() {
               </div>
             )}
           </div>
+
+          {/* AI Style Suggestions */}
+          {hasContent && (
+            <div style={{ marginBottom: 20 }}>
+              <button onClick={handleAiStyle} disabled={aiLoading}
+                style={{
+                  width: "100%", background: "var(--s2)", border: "1px solid var(--bp)",
+                  borderRadius: "var(--r12)", padding: "12px 16px", color: "var(--purpleL)",
+                  fontSize: ".88rem", fontWeight: 600, display: "flex", alignItems: "center",
+                  justifyContent: "space-between", cursor: aiLoading ? "not-allowed" : "pointer",
+                  transition: "all var(--tr)", opacity: aiLoading ? 0.7 : 1,
+                }}
+                onMouseOver={e => { if (!aiLoading) e.currentTarget.style.background = "var(--pdim)"; }}
+                onMouseOut={e => { e.currentTarget.style.background = "var(--s2)"; }}
+              >
+                <span>✨ AI Style Suggestions</span>
+                {aiLoading ? (
+                  <span style={{ width: 16, height: 16, border: "2px solid rgba(124,58,237,0.3)", borderTopColor: "var(--purple)", borderRadius: "50%", animation: "spin .65s linear infinite", display: "inline-block" }} />
+                ) : (
+                  <span style={{ fontSize: ".75rem" }}>Get 4 AI-generated color schemes →</span>
+                )}
+              </button>
+              {showAiPanel && !aiLoading && aiSuggestions.length > 0 && (
+                <div style={{ background: "var(--s2)", border: "1px solid var(--border)", borderRadius: "0 0 var(--r12) var(--r12)", padding: "16px", borderTop: "none" }}>
+                  <div style={{ fontSize: ".72rem", fontWeight: 700, letterSpacing: ".1em", textTransform: "uppercase", color: "var(--tmuted)", marginBottom: 12 }}>AI-Suggested Color Schemes</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                    {aiSuggestions.map((s, i) => (
+                      <button key={i} onClick={() => { setDarkColor(s.darkColor); setLightColor(s.lightColor); setShowAiPanel(false); showToast(`Applied: ${s.name}`); }}
+                        style={{
+                          background: "var(--s1)", border: "1px solid var(--border)", borderRadius: 10,
+                          padding: "12px", cursor: "pointer", textAlign: "left", transition: "all var(--tr)",
+                        }}
+                        onMouseOver={e => { e.currentTarget.style.borderColor = "var(--bp)"; }}
+                        onMouseOut={e => { e.currentTarget.style.borderColor = "var(--border)"; }}
+                      >
+                        <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
+                          <div style={{ width: 20, height: 20, borderRadius: 4, background: s.darkColor, border: "1px solid rgba(255,255,255,0.1)" }} />
+                          <div style={{ width: 20, height: 20, borderRadius: 4, background: s.lightColor, border: "1px solid rgba(255,255,255,0.1)" }} />
+                        </div>
+                        <div style={{ fontSize: ".78rem", fontWeight: 700, color: "var(--white)", marginBottom: 2 }}>{s.name}</div>
+                        <div style={{ fontSize: ".7rem", color: "var(--tmuted)", lineHeight: 1.4 }}>{s.description}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Live preview */}
           {hasContent && (
