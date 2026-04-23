@@ -1,0 +1,57 @@
+#!/bin/bash
+set -e
+
+echo "=== Step 1: Build frontend with Vite ==="
+pnpm vite build
+
+echo "=== Step 2: Compile API function as CJS with esbuild ==="
+mkdir -p .vercel/output/functions/api/index.func
+
+npx esbuild api/index.ts \
+  --platform=node \
+  --target=node20 \
+  --bundle \
+  --format=cjs \
+  --outfile=.vercel/output/functions/api/index.func/index.js
+
+echo "=== Step 3: Create function config ==="
+cat > .vercel/output/functions/api/index.func/.vc-config.json << 'EOF'
+{
+  "runtime": "nodejs20.x",
+  "handler": "index.js",
+  "launcherType": "Nodejs",
+  "shouldAddHelpers": true,
+  "maxDuration": 30
+}
+EOF
+
+# Add package.json to force CJS module resolution in the function directory
+cat > .vercel/output/functions/api/index.func/package.json << 'EOF'
+{"type": "commonjs"}
+EOF
+
+echo "=== Step 4: Copy static files ==="
+mkdir -p .vercel/output/static
+cp -r dist/public/. .vercel/output/static/
+
+echo "=== Step 5: Create Vercel output config ==="
+cat > .vercel/output/config.json << 'EOF'
+{
+  "version": 3,
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+}
+EOF
+
+echo "=== Build complete ==="
