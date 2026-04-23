@@ -1,0 +1,23 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "module": "CommonJS",
+    "types": ["node"],
+    "lib": ["esnext"],
+    "skipLibCheck": true,
+    "noEmit": false,
+    "outDir": "../dist/api"
+  },
+  "include": [
+    "./**/*",
+    "../server/**/*",
+    "../shared/**/*",
+    "../drizzle/**/*"
+  ],
+  "exclude": [
+    "../node_modules",
+    "../**/*.test.ts",
+    "../client/**/*"
+  ]
+}
