@@ -8,9 +8,10 @@ import { ENV } from "./_core/env";
 let _db: ReturnType<typeof drizzle> | null = null;
 
 export async function getDb() {
-  if (!_db && process.env.DATABASE_URL) {
+  const dbUrl = process.env.SUPABASE_DATABASE_URL || process.env.DATABASE_URL;
+  if (!_db && dbUrl) {
     try {
-      const client = postgres(process.env.DATABASE_URL, { max: 10 });
+      const client = postgres(dbUrl, { max: 10, ssl: 'require' });
       _db = drizzle(client);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
