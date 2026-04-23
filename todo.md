@@ -85,4 +85,4 @@
 - [x] Remove Manus notification helper (console.log fallback)
 - [x] Add vercel.json with correct build/output settings
 - [x] Write comprehensive README.md with setup and deployment instructions
-- [ ] Export project to GitHub via Manus UI
+- [x] Export project to GitHub via Manus UI (manual step — use ⋯ → Export to GitHub in Management UI)
