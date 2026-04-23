@@ -14,6 +14,8 @@ import Redirect from "./pages/Redirect";
 import AdminBlog from "./pages/AdminBlog";
 import BulkQR from "./pages/BulkQR";
 import ApiKeys from "./pages/ApiKeys";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function Router() {
   return (
@@ -28,6 +30,8 @@ function Router() {
       <Route path="/admin/blog" component={AdminBlog} />
       <Route path="/bulk" component={BulkQR} />
       <Route path="/api-keys" component={ApiKeys} />
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

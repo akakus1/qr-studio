@@ -1,6 +1,7 @@
 import { createHash, randomBytes } from "crypto";
 import { and, desc, eq, gte, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import { apiKeys, blogPosts, InsertBlogPost, InsertQrCode, InsertScanEvent, InsertUser, qrCodes, scanEvents, users } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -8,8 +9,13 @@ let _db: ReturnType<typeof drizzle> | null = null;
 
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
-    try { _db = drizzle(process.env.DATABASE_URL); }
-    catch (error) { console.warn("[Database] Failed to connect:", error); _db = null; }
+    try {
+      const client = postgres(process.env.DATABASE_URL, { max: 10 });
+      _db = drizzle(client);
+    } catch (error) {
+      console.warn("[Database] Failed to connect:", error);
+      _db = null;
+    }
   }
   return _db;
 }
@@ -37,7 +43,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     else if (user.openId === ENV.ownerOpenId) { values.role = "admin"; updateSet.role = "admin"; }
     if (!values.lastSignedIn) values.lastSignedIn = new Date();
     if (Object.keys(updateSet).length === 0) updateSet.lastSignedIn = new Date();
-    await db.insert(users).values(values).onDuplicateKeyUpdate({ set: updateSet });
+    await db.insert(users).values(values).onConflictDoUpdate({ target: users.openId, set: updateSet as Partial<typeof users.$inferInsert> });
   } catch (error) { console.error("[Database] Failed to upsert user:", error); throw error; }
 }
 
@@ -46,6 +52,27 @@ export async function getUserByOpenId(openId: string) {
   if (!db) return undefined;
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
   return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getUserByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function createUser(data: { email: string; name: string; passwordHash: string; openId: string }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.insert(users).values({
+    openId: data.openId,
+    email: data.email,
+    name: data.name,
+    passwordHash: data.passwordHash,
+    loginMethod: "email",
+    lastSignedIn: new Date(),
+  });
+  return getUserByEmail(data.email);
 }
 
 export async function getUserById(id: number) {
@@ -152,7 +179,7 @@ export async function getPostBySlug(slug: string) {
 export async function upsertBlogPost(data: InsertBlogPost) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  await db.insert(blogPosts).values(data).onDuplicateKeyUpdate({ set: { ...data } });
+  await db.insert(blogPosts).values(data).onConflictDoUpdate({ target: blogPosts.slug, set: { ...data } });
 }
 
 export async function getFullPostBySlug(slug: string) {

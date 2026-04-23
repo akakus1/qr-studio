@@ -60,6 +60,25 @@
 
 ## Deployment Preparation (GitHub + Vercel)
 
+## Independence Migration — Supabase Full Migration
+
+- [x] Migrate schema from MySQL to PostgreSQL (drizzle postgres-js)
+- [x] Update drizzle.config.ts to postgresql dialect
+- [x] Update server/db.ts to postgres-js driver
+- [x] Run SQL migrations on Supabase
+- [x] Replace Manus OAuth with email/password auth (register/login/logout tRPC procedures)
+- [x] Build register/login/logout tRPC procedures
+- [x] Build login and signup UI pages
+- [x] Update useAuth hook to use new email/password auth
+- [x] Replace Manus LLM with OpenAI API (OPENAI_API_KEY env var)
+- [x] Remove Manus notification dependency (console.log fallback)
+- [x] Update all environment variables for independence
+- [x] Fix aiStyle test to mock LLM (25 tests passing)
+- [ ] Verify all features end-to-end
+- [ ] Push to GitHub and save checkpoint
+
+## Deployment Preparation (GitHub + Vercel)
+
 - [ ] Audit Manus-specific dependencies and platform bindings
 - [ ] Replace Manus OAuth with standard auth (JWT + email/password or NextAuth)
 - [ ] Replace Manus LLM helper with direct OpenAI API call

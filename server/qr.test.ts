@@ -2,6 +2,30 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { appRouter } from "./routers";
 import type { TrpcContext } from "./_core/context";
 
+// Mock the LLM module so tests don't make real API calls
+vi.mock("./_core/llm", () => ({
+  invokeLLM: vi.fn().mockResolvedValue({
+    id: "test-id",
+    created: Date.now(),
+    model: "gpt-4o-mini",
+    choices: [{
+      index: 0,
+      message: {
+        role: "assistant",
+        content: JSON.stringify({
+          suggestions: [
+            { name: "Classic Black", darkColor: "#000000", lightColor: "#ffffff", description: "Timeless black on white." },
+            { name: "Deep Purple", darkColor: "#5B21B6", lightColor: "#F5F3FF", description: "Modern purple tones." },
+            { name: "Midnight Navy", darkColor: "#1E3A5F", lightColor: "#EFF6FF", description: "Deep navy on soft blue." },
+            { name: "Forest Green", darkColor: "#14532D", lightColor: "#F0FDF4", description: "Natural green palette." },
+          ],
+        }),
+      },
+      finish_reason: "stop",
+    }],
+  }),
+}));
+
 // Mock the db module so tests don't need a real database
 vi.mock("./db", () => ({
   createQrCode: vi.fn().mockResolvedValue({ id: 1, slug: "abc123", name: "Test QR", type: "url", content: "https://example.com", isDynamic: false, scanCount: 0, isActive: true, userId: 1, customisation: null, createdAt: new Date(), updatedAt: new Date() }),
