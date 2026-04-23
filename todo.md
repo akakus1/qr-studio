@@ -79,13 +79,10 @@
 
 ## Deployment Preparation (GitHub + Vercel)
 
-- [ ] Audit Manus-specific dependencies and platform bindings
-- [ ] Replace Manus OAuth with standard auth (JWT + email/password or NextAuth)
-- [ ] Replace Manus LLM helper with direct OpenAI API call
-- [ ] Replace Manus storage helper with direct S3/Cloudinary call
-- [ ] Replace Manus notification helper with email (Resend/SendGrid)
-- [ ] Add .env.example with all required variables
-- [ ] Add vercel.json with correct build/output settings
-- [ ] Write comprehensive README.md with setup and deployment instructions
-- [ ] Confirm Vercel compatibility (full-stack vs split architecture)
-- [ ] Package source code as ZIP for GitHub push
+- [x] Audit Manus-specific dependencies and platform bindings
+- [x] Replace Manus OAuth with standard auth (JWT + email/password)
+- [x] Replace Manus LLM helper with direct OpenAI API call
+- [x] Remove Manus notification helper (console.log fallback)
+- [x] Add vercel.json with correct build/output settings
+- [x] Write comprehensive README.md with setup and deployment instructions
+- [ ] Export project to GitHub via Manus UI
