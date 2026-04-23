@@ -3,7 +3,7 @@
   "compilerOptions": {
     "moduleResolution": "node",
     "module": "CommonJS",
-    "types": ["node"],
+    "types": ["node", "express"],
     "lib": ["esnext"],
     "skipLibCheck": true,
     "noEmit": false,
