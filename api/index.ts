@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express from "express";
+import express, { type Request, type Response, type NextFunction } from "express";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { appRouter } from "../server/routers";
 import { createContext } from "../server/_core/context";
@@ -15,7 +15,7 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // CORS for production
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   const origin = req.headers.origin;
   if (origin) {
     res.setHeader("Access-Control-Allow-Origin", origin);
@@ -42,7 +42,7 @@ app.use(
 );
 
 // REST API v1
-app.use("/api/v1", async (req, res, next) => {
+app.use("/api/v1", async (req: Request, res: Response, next: NextFunction) => {
   const auth = req.headers["authorization"];
   if (!auth || !auth.startsWith("Bearer ")) {
     res.status(401).json({ error: "Missing or invalid Authorization header." });
