@@ -1,4 +1,4 @@
-import express, { type Express } from "express";
+import express, { type Express, type Request, type Response } from "express";
 import Stripe from "stripe";
 import { updateUserPlan } from "./db";
 import { getDb } from "./db";
@@ -13,9 +13,10 @@ export function registerStripeRoutes(app: Express) {
   app.post(
     "/api/stripe/webhook",
     express.raw({ type: "application/json" }),
-    async (req, res) => {
+    async (req: Request, res: Response) => {
       const sig = req.headers["stripe-signature"] as string;
-      let event: Stripe.Event;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let event: any;
 
       try {
         event = stripe.webhooks.constructEvent(
@@ -40,7 +41,7 @@ export function registerStripeRoutes(app: Express) {
 
       try {
         if (event.type === "checkout.session.completed") {
-          const session = event.data.object as Stripe.Checkout.Session;
+          const session = event.data.object;
           const userId = parseInt(session.metadata?.user_id ?? "0", 10);
           const planId = session.metadata?.plan_id as PlanId | undefined;
 
@@ -66,7 +67,7 @@ export function registerStripeRoutes(app: Express) {
 
         if (event.type === "customer.subscription.deleted") {
           // Downgrade to free when subscription is cancelled
-          const subscription = event.data.object as Stripe.Subscription;
+          const subscription = event.data.object;
           const db = await getDb();
           if (db && subscription.customer) {
             const result = await db.select({ id: users.id })

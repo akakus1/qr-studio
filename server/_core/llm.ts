@@ -139,6 +139,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
   const rf = responseFormat ?? response_format;
   if (rf) payload.response_format = rf;
 
+  type FetchResponse = { ok: boolean; status: number; statusText: string; text: () => Promise<string>; json: () => Promise<unknown> };
   const response = await fetch(`${apiUrl}/v1/chat/completions`, {
     method: "POST",
     headers: {
@@ -146,7 +147,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
       authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify(payload),
-  });
+  }) as unknown as FetchResponse;
 
   if (!response.ok) {
     const errorText = await response.text();

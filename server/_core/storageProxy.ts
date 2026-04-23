@@ -1,8 +1,8 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { ENV } from "./env";
 
 export function registerStorageProxy(app: Express) {
-  app.get("/manus-storage/*", async (req, res) => {
+  app.get("/manus-storage/*", async (req: Request, res: Response) => {
     const key = (req.params as Record<string, string>)[0];
     if (!key) {
       res.status(400).send("Missing storage key");
@@ -21,9 +21,10 @@ export function registerStorageProxy(app: Express) {
       );
       forgeUrl.searchParams.set("path", key);
 
-      const forgeResp = await fetch(forgeUrl, {
+      // Use node-fetch style to avoid DOM Response type conflict
+      const forgeResp: { ok: boolean; status: number; text: () => Promise<string>; json: () => Promise<unknown> } = await fetch(forgeUrl as unknown as string, {
         headers: { Authorization: `Bearer ${ENV.forgeApiKey}` },
-      });
+      }) as unknown as { ok: boolean; status: number; text: () => Promise<string>; json: () => Promise<unknown> };
 
       if (!forgeResp.ok) {
         const body = await forgeResp.text().catch(() => "");
