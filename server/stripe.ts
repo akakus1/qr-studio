@@ -6,7 +6,18 @@ import { users } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { PLANS, type PlanId } from "./products";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-03-25.dahlia" });
+// Lazily initialize Stripe to avoid crash when STRIPE_SECRET_KEY is missing at startup
+let _stripe: Stripe | null = null;
+function getStripe(): Stripe {
+  if (!_stripe) {
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (!key) {
+      throw new Error("STRIPE_SECRET_KEY is not configured");
+    }
+    _stripe = new Stripe(key, { apiVersion: "2026-03-25.dahlia" });
+  }
+  return _stripe;
+}
 
 export function registerStripeRoutes(app: Express) {
   // ── Webhook (must be before express.json) ────────────────────────────────────
@@ -19,7 +30,7 @@ export function registerStripeRoutes(app: Express) {
       let event: any;
 
       try {
-        event = stripe.webhooks.constructEvent(
+        event = getStripe().webhooks.constructEvent(
           req.body,
           sig,
           process.env.STRIPE_WEBHOOK_SECRET!
@@ -105,7 +116,7 @@ export async function createCheckoutSession(params: {
   const plan = PLANS[params.planId];
   if (!plan) throw new Error(`Unknown plan: ${params.planId}`);
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await getStripe().checkout.sessions.create({
     mode: "payment",
     payment_method_types: ["card"],
     allow_promotion_codes: true,
