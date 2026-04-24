@@ -4,57 +4,17 @@ set -e
 echo "=== Step 1: Build frontend with Vite ==="
 pnpm vite build
 
-echo "=== Step 2: Compile API function as CJS with esbuild ==="
-mkdir -p .vercel/output/functions/api/index.func
-
+echo "=== Step 2: Pre-compile API function as CJS with esbuild ==="
+# Pre-compile the TypeScript API to a CJS bundle that Vercel can use directly
+# The footer ensures module.exports is the Express app itself (not a wrapper)
 npx esbuild api/index.ts \
   --platform=node \
   --target=node18 \
   --bundle \
   --format=cjs \
-  --footer:js="// Vercel Nodejs launcher compatibility: export the Express app directly
-// The launcher calls module.exports(req, res) directly
-if (module.exports && module.exports.default) {
-  module.exports = module.exports.default;
-}" \
-  --outfile=.vercel/output/functions/api/index.func/index.js
-
-echo "=== Step 3: Create function config ==="
-cat > .vercel/output/functions/api/index.func/.vc-config.json << 'EOF'
-{
-  "runtime": "nodejs20.x",
-  "handler": "index.js",
-  "launcherType": "Nodejs"
-}
-EOF
-
-# Add package.json to force CJS module resolution in the function directory
-cat > .vercel/output/functions/api/index.func/package.json << 'EOF'
-{"type": "commonjs"}
-EOF
-
-echo "=== Step 4: Copy static files ==="
-mkdir -p .vercel/output/static
-cp -r dist/public/. .vercel/output/static/
-
-echo "=== Step 5: Create Vercel output config ==="
-cat > .vercel/output/config.json << 'EOF'
-{
-  "version": 3,
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/index"
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ]
-}
-EOF
+  --footer:js="// Ensure module.exports is the Express app directly
+if (module.exports && module.exports.default) { module.exports = module.exports.default; }" \
+  --outfile=api/index.js
 
 echo "=== Build complete ==="
+echo "api/index.js size: $(ls -la api/index.js | awk '{print $5}') bytes"
