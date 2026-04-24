@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /dashboard
-Disallow: /analytics/
-
-Sitemap: https://qr-studio.manus.space/sitemap.xml
