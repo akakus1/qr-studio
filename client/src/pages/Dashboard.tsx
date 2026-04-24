@@ -2,11 +2,13 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 
 export default function Dashboard() {
   const { user, isAuthenticated, loading } = useAuth();
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -42,10 +44,10 @@ export default function Dashboard() {
       <div style={{ background: "var(--bg)", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 20 }}>
         <div className="bg-mesh" aria-hidden="true" />
         <div style={{ fontSize: "3rem" }}>🔒</div>
-        <h1 style={{ fontFamily: "'Syne', sans-serif", color: "var(--white)", fontSize: "1.5rem" }}>Sign in to access your dashboard</h1>
-        <p style={{ color: "var(--tmuted)", textAlign: "center", maxWidth: 400 }}>Save, manage, and track your QR codes from one place.</p>
-        <a href={getLoginUrl()} style={{ background: "linear-gradient(135deg,var(--purple),var(--purpleD))", color: "#fff", borderRadius: "var(--r12)", padding: "14px 32px", fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: "1rem", textDecoration: "none" }}>Sign In</a>
-        <a href="/" style={{ color: "var(--tmuted)", fontSize: ".85rem" }}>← Back to Generator</a>
+        <h1 style={{ fontFamily: "'Syne', sans-serif", color: "var(--white)", fontSize: "1.5rem" }}>{t("dashboard.signIn") || "Sign in to access your dashboard"}</h1>
+        <p style={{ color: "var(--tmuted)", textAlign: "center", maxWidth: 400 }}>{t("dashboard.signInDesc") || "Save, manage, and track your QR codes from one place."}</p>
+        <a href={getLoginUrl()} style={{ background: "linear-gradient(135deg,var(--purple),var(--purpleD))", color: "#fff", borderRadius: "var(--r12)", padding: "14px 32px", fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: "1rem", textDecoration: "none" }}>{t("nav.login") || "Sign In"}</a>
+        <a href="/" style={{ color: "var(--tmuted)", fontSize: ".85rem" }}>{t("dashboard.backToGenerator") || "← Back to Generator"}</a>
       </div>
     );
   }
@@ -89,12 +91,12 @@ export default function Dashboard() {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 32, flexWrap: "wrap", gap: 16 }}>
           <div>
             <h1 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "1.8rem", color: "var(--white)", marginBottom: 4 }}>
-              My QR Codes
+              {t("dashboard.title")}
             </h1>
-            <p style={{ color: "var(--tmuted)", fontSize: ".9rem" }}>Manage, track, and update your QR codes</p>
+            <p style={{ color: "var(--tmuted)", fontSize: ".9rem" }}>{t("dashboard.subtitle") || "Manage, track, and update your QR codes"}</p>
           </div>
           <a href="/" style={{ display: "flex", alignItems: "center", gap: 8, background: "linear-gradient(135deg,var(--purple),var(--purpleD))", color: "#fff", borderRadius: "var(--r12)", padding: "12px 24px", fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: ".9rem", textDecoration: "none", boxShadow: "0 4px 16px rgba(124,58,237,0.4)" }}>
-            + Create New QR
+            + {t("dashboard.createFirst")}
           </a>
         </div>
 
@@ -120,7 +122,7 @@ export default function Dashboard() {
             <div style={{ fontSize: "1.5rem" }}>🚀</div>
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, color: "var(--white)", marginBottom: 4 }}>Upgrade to Pro for Dynamic QR Codes & Analytics</div>
-              <div style={{ fontSize: ".85rem", color: "var(--tmuted)" }}>Track scans, update destinations, and unlock unlimited QR codes.</div>
+              <div style={{ fontSize: ".85rem", color: "var(--tmuted)" }}>Track {t("dashboard.card.scans")}, update destinations, and unlock unlimited QR codes.</div>
             </div>
             <a href="/pricing" style={{ background: "linear-gradient(135deg,var(--purple),var(--purpleD))", color: "#fff", borderRadius: "var(--r12)", padding: "10px 20px", fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: ".85rem", textDecoration: "none", whiteSpace: "nowrap" }}>Upgrade — $9/mo</a>
           </div>
@@ -156,7 +158,7 @@ export default function Dashboard() {
                         style={{ background: "linear-gradient(135deg,var(--purple),var(--purpleD))", border: "none", borderRadius: "var(--r12)", color: "#fff", padding: "8px 20px", fontSize: ".85rem", fontWeight: 700, cursor: "pointer" }}>
                         Save
                       </button>
-                      <button onClick={() => setEditingId(null)} style={{ background: "none", border: "1px solid var(--border)", borderRadius: "var(--r12)", color: "var(--tmuted)", padding: "8px 20px", fontSize: ".85rem", cursor: "pointer" }}>Cancel</button>
+                      <button onClick={() => setEditingId(null)} style={{ background: "none", border: "1px solid var(--border)", borderRadius: "var(--r12)", color: "var(--tmuted)", padding: "8px 20px", fontSize: ".85rem", cursor: "pointer" }}>{t("common.cancel")}</button>
                     </div>
                   </div>
                 ) : (
@@ -195,7 +197,7 @@ export default function Dashboard() {
                       </button>
                       {deleteConfirm === qr.id ? (
                         <>
-                          <button onClick={() => deleteMutation.mutate({ id: qr.id })} style={{ background: "rgba(239,68,68,0.15)", border: "1px solid var(--red)", borderRadius: "var(--r12)", color: "var(--red)", padding: "7px 14px", fontSize: ".8rem", fontWeight: 700, cursor: "pointer" }}>Confirm Delete</button>
+                          <button onClick={() => deleteMutation.mutate({ id: qr.id })} style={{ background: "rgba(239,68,68,0.15)", border: "1px solid var(--red)", borderRadius: "var(--r12)", color: "var(--red)", padding: "7px 14px", fontSize: ".8rem", fontWeight: 700, cursor: "pointer" }}>{t("dashboard.delete.delete")}</button>
                           <button onClick={() => setDeleteConfirm(null)} style={{ background: "none", border: "1px solid var(--border)", borderRadius: "var(--r12)", color: "var(--tmuted)", padding: "7px 14px", fontSize: ".8rem", cursor: "pointer" }}>Cancel</button>
                         </>
                       ) : (
@@ -215,7 +217,7 @@ export default function Dashboard() {
       </div>
 
       <footer style={{ textAlign: "center", padding: "32px 24px", color: "var(--tdim)", fontSize: ".78rem", borderTop: "1px solid var(--border)", position: "relative", zIndex: 1 }}>
-        © {new Date().getFullYear()} QR Studio. All rights reserved.
+        © {new Date().getFullYear()} QR Studio. {t("footer.allRights") || "All rights reserved."}
       </footer>
     </div>
   );

@@ -159,3 +159,24 @@
 
 /* ── Flex min-size fix ───────────────────────────────────────────────────────── */
 .flex { min-width: 0; min-height: 0; }
+
+/* ── RTL Support (Arabic) ────────────────────────────────────────────────────── */
+[dir="rtl"] body {
+  font-family: 'Cairo', 'DM Sans', sans-serif;
+}
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6 {
+  font-family: 'Cairo', 'Syne', sans-serif;
+}
+[dir="rtl"] .toast-custom {
+  right: 50%;
+  left: auto;
+  transform: translateX(50%) translateY(20px);
+}
+[dir="rtl"] .toast-custom.show {
+  transform: translateX(50%) translateY(0);
+}

@@ -86,3 +86,32 @@
 - [x] Add vercel.json with correct build/output settings
 - [x] Write comprehensive README.md with setup and deployment instructions
 - [x] Export project to GitHub via Manus UI (manual step — use ⋯ → Export to GitHub in Management UI)
+
+## Stripe Payment Activation
+- [ ] Verify Vercel deployment works (login/register on getqrdesign.com)
+- [ ] Create Stripe products and prices (Free/Pro/Business plans)
+- [ ] Build pricing page UI with plan cards
+- [ ] Implement checkout session creation tRPC procedure
+- [ ] Handle Stripe webhooks (checkout.session.completed, subscription events)
+- [ ] Update user plan in DB after successful payment
+- [ ] Build subscription management page (current plan, cancel, upgrade)
+- [ ] Test payment flow with Stripe test card 4242 4242 4242 4242
+
+## PayPal Payment Integration
+- [ ] Verify PayPal sandbox credentials (Client ID + Secret)
+- [ ] Install @paypal/checkout-server-sdk or use REST API directly
+- [ ] Add PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET env vars
+- [ ] Create PayPal order creation tRPC procedure
+- [ ] Create PayPal order capture tRPC procedure
+- [ ] Add PayPal webhook handler for payment.capture.completed
+- [ ] Add PayPal button to pricing page UI
+- [ ] Test PayPal sandbox payment flow
+
+## Multi-Language Support (i18n)
+- [x] Install i18next and react-i18next
+- [x] Create i18n configuration (client/src/lib/i18n.ts)
+- [x] Create translation files for 5 languages: EN, AR, FR, ES, DE
+- [x] Integrate translations into Home.tsx (all sections)
+- [x] Integrate translations into Dashboard.tsx
+- [x] Add language switcher UI in navigation bar (flag + language code dropdown)
+- [x] Add RTL support for Arabic (dir="rtl", Cairo font, CSS RTL styles)

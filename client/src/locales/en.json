@@ -1,0 +1,248 @@
+{
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "pricing": "Pricing",
+    "blog": "Blog",
+    "login": "Login",
+    "logout": "Logout",
+    "getStarted": "Get Started"
+  },
+  "home": {
+    "hero": {
+      "badge": "Free QR Code Generator",
+      "title": "Generate QR Codes",
+      "titleHighlight": "Instantly. Free.",
+      "subtitle": "Create beautiful, customizable QR codes for URLs, WiFi, vCards, and more. No signup required.",
+      "cta": "Create QR Code",
+      "ctaSecondary": "View Dashboard"
+    },
+    "qrTypes": {
+      "url": "URL",
+      "text": "Text",
+      "wifi": "WiFi",
+      "vcard": "vCard",
+      "email": "Email",
+      "phone": "Phone",
+      "instagram": "Instagram",
+      "location": "Location",
+      "pdf": "PDF"
+    },
+    "fields": {
+      "url": "Enter URL",
+      "text": "Enter text",
+      "wifiSsid": "Network Name (SSID)",
+      "wifiPass": "Password",
+      "wifiEnc": "Encryption",
+      "wifiHidden": "Hidden Network",
+      "vcardFname": "First Name",
+      "vcardLname": "Last Name",
+      "vcardPhone": "Phone",
+      "vcardEmail": "Email",
+      "vcardOrg": "Organization",
+      "vcardTitle": "Job Title",
+      "vcardUrl": "Website",
+      "emailTo": "Email Address",
+      "emailSubject": "Subject",
+      "emailBody": "Message",
+      "phone": "Phone Number",
+      "igHandle": "Instagram Handle",
+      "lat": "Latitude",
+      "lng": "Longitude",
+      "locationName": "Location Name",
+      "pdfUrl": "PDF URL",
+      "qrName": "QR Code Name (optional)"
+    },
+    "customize": {
+      "title": "Customize",
+      "darkColor": "Dark Color",
+      "lightColor": "Light Color",
+      "size": "Size",
+      "logo": "Logo",
+      "uploadLogo": "Upload Logo",
+      "removeLogo": "Remove",
+      "aiSuggest": "AI Suggest",
+      "aiLoading": "Generating suggestions...",
+      "aiTitle": "AI Style Suggestions"
+    },
+    "actions": {
+      "generate": "Generate QR Code",
+      "generating": "Generating...",
+      "download": "Download PNG",
+      "downloadSvg": "Download SVG",
+      "save": "Save QR Code",
+      "dynamic": "Dynamic QR",
+      "dynamicTooltip": "Dynamic QR codes allow you to change the destination URL after creation"
+    },
+    "save": {
+      "title": "Save QR Code",
+      "nameLabel": "Name your QR code",
+      "namePlaceholder": "e.g. My Website QR",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "success": "QR code saved!",
+      "loginRequired": "Please log in to save QR codes"
+    },
+    "pricing": {
+      "title": "Simple, Transparent Pricing",
+      "subtitle": "Start free, upgrade when you need more",
+      "popular": "Most Popular",
+      "forever": "forever",
+      "perMonth": "/month",
+      "getStarted": "Get Started",
+      "currentPlan": "Current Plan",
+      "upgrade": "Upgrade Now"
+    },
+    "plans": {
+      "free": {
+        "label": "Free",
+        "features": [
+          "5 QR codes",
+          "PNG & SVG download",
+          "Custom colors & logo",
+          "Basic types"
+        ]
+      },
+      "pro": {
+        "label": "Pro",
+        "features": [
+          "Unlimited QR codes",
+          "Dynamic QR codes",
+          "Scan analytics",
+          "All QR types",
+          "Priority support"
+        ]
+      },
+      "business": {
+        "label": "Business",
+        "features": [
+          "Everything in Pro",
+          "Team access",
+          "API access",
+          "White-label",
+          "Custom domain"
+        ]
+      }
+    },
+    "testimonials": {
+      "title": "Loved by thousands",
+      "subtitle": "See what our users are saying"
+    },
+    "features": {
+      "title": "Everything you need",
+      "subtitle": "Powerful features to create, manage and track your QR codes",
+      "items": {
+        "dynamic": {
+          "title": "Dynamic QR Codes",
+          "desc": "Change destination URLs anytime without reprinting"
+        },
+        "analytics": {
+          "title": "Scan Analytics",
+          "desc": "Track scans, locations, and devices in real-time"
+        },
+        "custom": {
+          "title": "Custom Design",
+          "desc": "Colors, logos, and styles to match your brand"
+        },
+        "bulk": {
+          "title": "Bulk Generation",
+          "desc": "Create hundreds of QR codes at once via CSV"
+        },
+        "api": {
+          "title": "API Access",
+          "desc": "Integrate QR generation into your own apps"
+        },
+        "secure": {
+          "title": "Secure & Reliable",
+          "desc": "99.9% uptime with enterprise-grade security"
+        }
+      }
+    },
+    "footer": {
+      "tagline": "The most powerful QR code generator for businesses and individuals.",
+      "product": "Product",
+      "company": "Company",
+      "legal": "Legal",
+      "links": {
+        "features": "Features",
+        "pricing": "Pricing",
+        "api": "API",
+        "blog": "Blog",
+        "about": "About",
+        "contact": "Contact",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service"
+      },
+      "copyright": "© {{year}} QR Studio. All rights reserved."
+    }
+  },
+  "dashboard": {
+    "title": "My QR Codes",
+    "empty": "No QR codes yet",
+    "emptyDesc": "Create your first QR code to get started",
+    "createFirst": "Create QR Code",
+    "search": "Search QR codes...",
+    "filter": {
+      "all": "All",
+      "dynamic": "Dynamic",
+      "static": "Static"
+    },
+    "card": {
+      "scans": "scans",
+      "dynamic": "Dynamic",
+      "static": "Static",
+      "edit": "Edit",
+      "analytics": "Analytics",
+      "delete": "Delete",
+      "download": "Download",
+      "copy": "Copy URL",
+      "copied": "Copied!"
+    },
+    "delete": {
+      "title": "Delete QR Code",
+      "confirm": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    },
+    "signIn": "Sign in to access your dashboard",
+    "signInDesc": "Save, manage, and track your QR codes from one place.",
+    "backToGenerator": "← Back to Generator",
+    "subtitle": "Manage, track, and update your QR codes"
+  },
+  "pricing": {
+    "title": "Choose Your Plan",
+    "subtitle": "Start free, upgrade when you need more power",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "save": "Save 20%",
+    "currentPlan": "Current Plan",
+    "upgrade": "Upgrade Now",
+    "contact": "Contact Sales"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Tips, guides, and news about QR codes",
+    "readMore": "Read More",
+    "backToBlog": "Back to Blog",
+    "publishedOn": "Published on",
+    "by": "by"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try Again",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "yes": "Yes",
+    "no": "No",
+    "or": "or",
+    "free": "Free"
+  },
+  "footer": {
+    "allRights": "All rights reserved."
+  }
+}
