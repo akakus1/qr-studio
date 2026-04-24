@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["esnext"],
+    "types": ["node", "express"],
+    "moduleResolution": "bundler",
+    "module": "ESNext"
+  },
+  "include": ["./**/*", "../drizzle/**/*", "../shared/**/*", "../api/**/*"],
+  "exclude": ["../vite.config.ts", "../client/**/*"]
+}

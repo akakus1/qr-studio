@@ -12,18 +12,17 @@ npx esbuild api/index.ts \
   --target=node18 \
   --bundle \
   --format=cjs \
-  --footer:js="// Vercel compatibility: ensure handler is directly callable
-if (module.exports && module.exports.default && typeof module.exports.default === 'function') {
-  var _handler = module.exports.default;
-  module.exports = _handler;
-  module.exports.default = _handler;
+  --footer:js="// Vercel Nodejs launcher compatibility: export the Express app directly
+// The launcher calls module.exports(req, res) directly
+if (module.exports && module.exports.default) {
+  module.exports = module.exports.default;
 }" \
   --outfile=.vercel/output/functions/api/index.func/index.js
 
 echo "=== Step 3: Create function config ==="
 cat > .vercel/output/functions/api/index.func/.vc-config.json << 'EOF'
 {
-  "runtime": "nodejs18.x",
+  "runtime": "nodejs20.x",
   "handler": "index.js",
   "launcherType": "Nodejs"
 }

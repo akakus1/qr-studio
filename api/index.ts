@@ -75,7 +75,6 @@ app.post("/api/v1/qr", async (req: any, res: any) => {
   res.status(201).json({ success: true, slug, redirectUrl: `/r/${slug}` });
 });
 
-// Export as handler function (required by Vercel)
-export default function handler(req: any, res: any) {
-  return app(req, res);
-}
+// Export the Express app directly as the default export
+// Vercel's Nodejs launcher invokes this directly as a request listener
+export default app;
