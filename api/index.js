@@ -60815,12 +60815,12 @@ var init_sdk = __esm({
   }
 });
 
-// api/index.ts
-var index_exports = {};
-__export(index_exports, {
-  default: () => index_default
+// api/server.ts
+var server_exports = {};
+__export(server_exports, {
+  default: () => server_default
 });
-module.exports = __toCommonJS(index_exports);
+module.exports = __toCommonJS(server_exports);
 var import_express2 = __toESM(require_express2());
 
 // node_modules/.pnpm/@trpc+server@11.16.0_typescript@5.9.3/node_modules/@trpc/server/dist/codes-DagpWZLc.mjs
@@ -78350,7 +78350,7 @@ function registerStorageProxy(app2) {
   });
 }
 
-// api/index.ts
+// api/server.ts
 init_stripe();
 var app = (0, import_express2.default)();
 registerStripeRoutes(app);
@@ -78411,7 +78411,7 @@ app.post("/api/v1/qr", async (req, res) => {
   await createQrCode2({ userId: req.apiUserId, slug, type, content, name, isDynamic });
   res.status(201).json({ success: true, slug, redirectUrl: `/r/${slug}` });
 });
-var index_default = app;
+var server_default = app;
 /*! Bundled license information:
 
 depd/index.js:
